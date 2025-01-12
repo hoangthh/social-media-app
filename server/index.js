@@ -11,7 +11,7 @@ const URI =
   "mongodb+srv://tranhoang202204:udqWWfDESrv8D7zb@cluster0.yiarj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/", posts);
