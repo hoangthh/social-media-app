@@ -1,5 +1,9 @@
+import { useDispatch } from "react-redux";
+import * as actions from "./redux/actions";
+import HomePage from "./pages/HomePage";
+
 function App() {
-  return <p>This is blog app</p>;
+  return <HomePage />;
 }
 
 export default App;
