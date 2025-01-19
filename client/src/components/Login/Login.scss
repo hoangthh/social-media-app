@@ -1,0 +1,82 @@
+.login {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+
+  &--heading {
+    user-select: none;
+
+    &__main {
+      color: rgb(0, 110, 255);
+      font-size: 60px;
+      font-weight: 750;
+      margin: 0;
+    }
+
+    &__sub {
+      margin-top: 10px;
+      font-size: 27px;
+    }
+  }
+
+  &--form {
+    position: relative;
+    box-sizing: border-box;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid rgb(233, 230, 230);
+    border-radius: 10px;
+    box-shadow: -2px 2px 10px 0 rgba(135, 135, 135, 0.2);
+    user-select: none;
+
+    &__forgot-password {
+      text-align: center;
+      padding: 20px;
+      font-size: 15px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(199, 197, 197, 0.8);
+      user-select: none;
+
+      &--a {
+        text-decoration: none;
+        color: rgb(0, 119, 255);
+        user-select: contain;
+      }
+    }
+  }
+
+  &--footer {
+    position: absolute;
+    top: 100%;
+    left: 0px;
+    margin-top: 20px;
+    display: inline-block;
+    user-select: none;
+
+    &__create-page {
+      color: black;
+      font-family: SFProText-Semibold, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    &__heading {
+      color: #1c1e21;
+      font-family: SFProText-Regular, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+      user-select: auto;
+      z-index: 1;
+      user-select: none;
+    }
+  }
+}
