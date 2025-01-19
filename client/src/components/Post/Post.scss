@@ -1,0 +1,128 @@
+.card--footer {
+  margin-bottom: 3px;
+  padding: 0 10px;
+
+  &--info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #dadada;
+
+    &__left {
+      &--react {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+
+        &--p {
+          margin-left: 5px;
+          font-size: 15px;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    &__right {
+      display: flex;
+      flex-direction: row;
+
+      &--comment__p {
+        margin-right: 20px;
+      }
+
+      &--comment__p:hover,
+      &--share__p:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &--actions {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+
+    &--button {
+      font-size: 17px;
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      padding: 7px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #dadada;
+      }
+
+      i {
+        font-size: 20px;
+        margin-right: 10px;
+      }
+
+      &__title {
+        font-weight: 500;
+        &.like-icon {
+          color: #4f92ff;
+        }
+        &.favourite-icon {
+          color: #f67386;
+        }
+        &.haha-icon,
+        &.wow-icon,
+        &.sad-icon {
+          color: #fad17e;
+        }
+        &.angry-icon {
+          color: #ea7b20;
+        }
+      }
+
+      &__reactions {
+        height: 45px;
+        position: absolute;
+        top: -130%;
+        left: 0;
+        padding-left: 15px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50px;
+        background-color: #fff;
+        box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        user-select: none;
+
+        &__img {
+          margin-left: -15px;
+          width: 60px;
+          object-fit: cover;
+          background: transparent;
+          background-color: transparent;
+          border-radius: 50%;
+          transition: all 0.3s;
+          cursor: pointer;
+
+          &:hover {
+            transform: scale(1.2);
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,8 +9,6 @@ export default function PostList() {
   const dispatch = useDispatch();
   const posts = useSelector(postsState$);
 
-  console.log(posts);
-
   useEffect(() => {
     dispatch(actions.getPosts.getPostsRequest());
   }, [dispatch]);
@@ -19,7 +17,7 @@ export default function PostList() {
     <Grid container spacing={2} alignItems="stretch" mt={1}>
       {posts.map((post) => (
         <Grid item xs={12} key={post._id}>
-          <Post post={post} />
+          <Post post={post} dispatch={dispatch} />
         </Grid>
       ))}
     </Grid>
