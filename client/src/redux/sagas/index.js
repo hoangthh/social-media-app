@@ -22,9 +22,20 @@ function* createPostSaga(action) {
   }
 }
 
+function* fetchUserSaga(action) {
+  try {
+    const user = yield call(api.fetchUser);
+    //console.log("[fetchUserSaga - user]", user.data.user);
+    yield put(actions.getUser.getUserSuccess(user.data.user));
+  } catch (error) {
+    yield put(actions.getUser.getUserFailure(error));
+  }
+}
+
 function* mySaga() {
   yield takeLatest(actions.getPosts.getPostsRequest().type, fetchPostSaga);
   yield takeLatest(actions.createPost.createPostRequest().type, createPostSaga);
+  yield takeLatest(actions.getUser.getUserRequest().type, fetchUserSaga);
 } //generator function ES6
 
 export default mySaga;
