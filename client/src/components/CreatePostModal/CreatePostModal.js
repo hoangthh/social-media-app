@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Modal,
-  TextareaAutosize,
-  TextField,
-} from "@mui/material";
+import { Avatar, Button, Modal, TextField } from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
 import { modalState$ } from "../../redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
@@ -187,6 +181,7 @@ export default function CreatePostModal() {
           component="span"
           fullWidth
           disabled={isSubmitButtonDisabled}
+          sx={{ textTransform: "none" }}
         >
           Đăng
         </Button>

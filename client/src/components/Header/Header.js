@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, AppBar, Box, Stack, styled, Avatar } from "@mui/material";
+import { TextField, AppBar, Stack, Avatar, Tooltip } from "@mui/material";
 import {} from "@mui/system";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -31,7 +31,7 @@ export default function Header() {
           />
           <TextField
             id="search-input"
-            placeholder="Tìm kiếm"
+            placeholder="Tìm kiếm trên Facebook"
             size="small"
             slotProps={{
               input: {
@@ -58,33 +58,49 @@ export default function Header() {
 
         {/* Main navbar */}
         <div className="main-navbar">
-          <div className="main-navbar--item">
-            <HomeOutlinedIcon />
-          </div>
-          <div className="main-navbar--item">
-            <OndemandVideoOutlinedIcon />
-          </div>
-          <div className="main-navbar--item">
-            <SportsEsportsOutlinedIcon />
-          </div>
-          <div className="main-navbar--item">
-            <StorefrontOutlinedIcon />
-          </div>
-          <div className="main-navbar--item">
-            <Diversity3OutlinedIcon />
-          </div>
+          <Tooltip title="Trang chủ">
+            <div className="main-navbar--item">
+              <HomeOutlinedIcon />
+            </div>
+          </Tooltip>
+          <Tooltip title="Video">
+            <div className="main-navbar--item">
+              <OndemandVideoOutlinedIcon />
+            </div>
+          </Tooltip>
+          <Tooltip title="Trò chơi">
+            <div className="main-navbar--item">
+              <SportsEsportsOutlinedIcon />
+            </div>
+          </Tooltip>
+          <Tooltip title="Marketplace">
+            <div className="main-navbar--item">
+              <StorefrontOutlinedIcon />
+            </div>
+          </Tooltip>
+          <Tooltip title="Nhóm">
+            <div className="main-navbar--item">
+              <Diversity3OutlinedIcon />
+            </div>
+          </Tooltip>
         </div>
 
         {/* Right navbar */}
         <div className="right-navbar">
-          <div className="right-navbar--item">
-            <i className="fa-brands fa-facebook-messenger"></i>
-          </div>
-          <div className="right-navbar--item">
-            <i className="fa-solid fa-bell"></i>
-          </div>
+          <Tooltip title="Messenger">
+            <div className="right-navbar--item">
+              <i className="fa-brands fa-facebook-messenger"></i>
+            </div>
+          </Tooltip>
+          <Tooltip title="Thông báo">
+            <div className="right-navbar--item">
+              <i className="fa-solid fa-bell"></i>
+            </div>
+          </Tooltip>
 
-          <Avatar></Avatar>
+          <Tooltip title="Tài khoản">
+            <Avatar></Avatar>
+          </Tooltip>
         </div>
       </Stack>
     </AppBar>
