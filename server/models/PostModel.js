@@ -11,7 +11,10 @@ const schema = new mongoose.Schema(
       require: true,
       default: "Anonymous",
     },
-    attachment: String,
+    attachment: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
