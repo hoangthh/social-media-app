@@ -95,14 +95,20 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const newPost = req.body;
+    const { body, file } = req;
+    const content = body.content;
+    const filename = file.filename;
 
-    const post = new PostModel(newPost);
-    await post.save();
+    // Tạo bài post mới với attachment
+    const newPost = await PostModel.create({
+      content: content,
+      author: body.author,
+      attachment: filename,
+    });
 
-    res.status(200).json(post);
+    res.status(200).send(newPost);
   } catch (err) {
-    res.status(500).json({ error: err });
+    return res.status(500).json({ name: err.name, message: err.message });
   }
 };
 
