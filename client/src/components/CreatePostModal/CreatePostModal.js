@@ -12,11 +12,14 @@ export default function CreatePostModal() {
   const [data, setData] = useState({
     content: "",
     attachment: "",
+    preview: "",
   });
 
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
+  const [previewImage, setPreviewImage] = useState();
 
   const { isShow } = useSelector(modalState$);
+  console.log("post create modal", isShow);
 
   const dispatch = useDispatch();
 
@@ -55,18 +58,12 @@ export default function CreatePostModal() {
         selectedFile.name.endsWith("jpg") ||
         selectedFile.name.endsWith("jpeg"))
     ) {
-      const reader = new FileReader();
+      setPreviewImage(URL.createObjectURL(selectedFile));
 
-      // Khi file đã được đọc xong
-      reader.onloadend = () => {
-        setData((prevData) => ({
-          ...prevData,
-          attachment: reader.result,
-        }));
-      };
-
-      // Đọc file dưới dạng Data URL (Base64)
-      reader.readAsDataURL(selectedFile);
+      setData((prevData) => ({
+        ...prevData,
+        attachment: selectedFile,
+      }));
     }
   };
 
@@ -83,11 +80,16 @@ export default function CreatePostModal() {
 
   const handleSubmit = useCallback(() => {
     if (data.content) {
-      console.log("[Submit data]", { data });
+      const formData = new FormData();
+      formData.append("content", data.content);
+      if (data.attachment) {
+        formData.append("attachment", data.attachment);
+      }
       dispatch(createPost.createPostRequest(data));
       handleCloseModal();
     }
-  }, [data, dispatch]);
+    console.log(data);
+  }, [data, dispatch, handleCloseModal]);
 
   const userName = "Hoàng";
 
@@ -146,7 +148,7 @@ export default function CreatePostModal() {
             </div>
             <img
               id="image-input-preview--img"
-              src={data.attachment}
+              src={previewImage}
               alt="img-upload"
             />
             <label htmlFor="image-input" />
