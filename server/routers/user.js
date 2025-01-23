@@ -1,11 +1,11 @@
 import express from "express";
 import { getUser } from "../controllers/user.js";
-import middleware from "../middleware/index.js";
+import { authenticateToken } from "../middleware/middleware.js";
 
 const router = express.Router();
 
 //PATH: /user
 
-router.get("/", middleware.authenticateToken, getUser);
+router.get("/", authenticateToken, getUser);
 
 export default router;
