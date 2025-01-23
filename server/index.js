@@ -3,11 +3,10 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import { mongooseConnection } from "./config/mongoose.js";
 import routers from "./routers/index.js";
 import session from "express-session";
 import passport from "./passport.js";
-import middleware from "./middleware/index.js";
 
 dotenv.config();
 
@@ -20,7 +19,10 @@ const URI = process.env.MONGODB_URI;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Cấu hình CORS
+// Cấu hình static file
+app.use(express.static("uploads"));
+
+// Cấu hình CORS
 app.use(
   cors({
     origin: process.env.FRONTEND_URL, // URL frontend của bạn
@@ -44,15 +46,8 @@ app.use(
 // Cấu hình cookie-parser middleware
 app.use(cookieParser());
 
-//Kết nối MongoDB
-mongoose
-  .connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((err) => {
-    console.log("err", err);
-  });
+// Kết nối MongoDB
+mongooseConnection();
 
 // Khởi tạo Passport
 app.use(passport.initialize());
@@ -62,5 +57,5 @@ app.use(passport.session());
 app.use("/", routers);
 
 app.listen(PORT, () => {
-  console.log("Server is running");
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
