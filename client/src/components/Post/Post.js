@@ -65,19 +65,6 @@ const reactions = [
 ];
 
 const Post = ({ post, dispatch }) => {
-  const ReactionIcon = styled(Avatar)`
-    &.MuiAvatar-root {
-      border: none;
-      width: 20px;
-      height: 20px;
-    }
-
-    &.favourite-icon {
-      width: 19px;
-      height: 19px;
-    }
-  `;
-
   const [showReactions, setShowReactions] = useState(false);
   const [reaction, setReaction] = useState({
     title: "",
@@ -94,11 +81,25 @@ const Post = ({ post, dispatch }) => {
     const mapReaction = findReactionByType(reactionType);
 
     setReaction(mapReaction);
-  }, []);
+  }, [post, user.id]);
 
   const commentCount = 497;
 
   const shareCount = 52;
+
+  // ReactionIcon Component
+  const ReactionIcon = styled(Avatar)`
+    &.MuiAvatar-root {
+      border: none;
+      width: 20px;
+      height: 20px;
+    }
+
+    &.favourite-icon {
+      width: 19px;
+      height: 19px;
+    }
+  `;
 
   // Hàm kiểm tra xem userId có tồn tại duy nhất trong một reaction không
   const isOnlyLike = (post, userId) => {
@@ -172,6 +173,10 @@ const Post = ({ post, dispatch }) => {
     dispatch(actions.getPosts.getPostsRequest());
   };
 
+  const openCommentModal = () => {
+    dispatch(actions.showCommentModal(post));
+  };
+  console.log("post attachment", post.attachment);
   return (
     <Card>
       <CardHeader
@@ -194,7 +199,7 @@ const Post = ({ post, dispatch }) => {
       </CardContent>
 
       <CardMedia
-        image={post.attachment}
+        image={`${process.env.REACT_APP_BACKEND_URL}/${post.attachment}`}
         title="Title"
         component="img"
         sx={{
@@ -216,9 +221,19 @@ const Post = ({ post, dispatch }) => {
                         key={reaction.type}
                         title={
                           <Fragment>
-                            {post[reaction.type].users.map((reactionUser) => (
-                              <p key={reactionUser._id}>{reactionUser.name}</p>
-                            ))}
+                            {post[reaction.type]?.users.map(
+                              (reactionUser, index) => (
+                                <Fragment key={index}>
+                                  <p>{reactionUser.name}</p>
+                                  {/* Nếu số lượng người react nhiều hơn 10 thì thể hiện phần còn lại */}
+                                  {post.reactionCount > 10 && (
+                                    <p>
+                                      và {post.reactionCount - 10} người khác
+                                    </p>
+                                  )}
+                                </Fragment>
+                              )
+                            )}
                           </Fragment>
                         }
                       >
@@ -253,7 +268,10 @@ const Post = ({ post, dispatch }) => {
           </div>
           {/* Info right side */}
           <div className="card--footer--info__right">
-            <p className="card--footer--info__right--comment__p">
+            <p
+              className="card--footer--info__right--comment__p"
+              onClick={openCommentModal}
+            >
               {commentCount} bình luận
             </p>
             <p className="card--footer--info__right--share__p">
@@ -329,7 +347,10 @@ const Post = ({ post, dispatch }) => {
               </>
             )}
           </div>
-          <div className="card--footer--actions--button">
+          <div
+            className="card--footer--actions--button"
+            onClick={openCommentModal}
+          >
             <i className="fa-regular fa-comment"></i>
             <span>Bình luận</span>
           </div>
