@@ -13,7 +13,11 @@ const sagaMiddleware = createSagaMiddleware();
 const store = configureStore({
   reducer: reducers, // Root reducers
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["createPostRequest"], // Thêm action mà bạn muốn bỏ qua kiểm tra serializability
+      },
+    }).concat(sagaMiddleware),
 });
 
 sagaMiddleware.run(mySaga);

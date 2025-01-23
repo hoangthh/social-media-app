@@ -3,7 +3,12 @@ import axios from "axios";
 const URL = "http://localhost:5000";
 
 export const fetchPosts = () => axios.get(`${URL}/posts`);
-export const createPost = (payload) => axios.post(`${URL}/posts`, payload);
+export const createPost = (formData) =>
+  axios.post(`${URL}/posts/create`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 export const fetchUser = async () => {
   const res = await axios.get(`${URL}/user`, {
     withCredentials: true,
