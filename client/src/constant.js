@@ -6,6 +6,10 @@ export const INIT_STATE = {
   modal: {
     isShow: false,
   },
+  commentModal: {
+    isShow: false,
+    data: {},
+  },
   user: {
     isLoading: false,
     data: null,
