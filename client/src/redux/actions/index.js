@@ -24,3 +24,6 @@ export const getUser = createActions({
 
 export const showModal = createAction("SHOW_CREATE_POST_MODAL");
 export const hideModal = createAction("HIDE_CREATE_POST_MODAL");
+
+export const showCommentModal = createAction("SHOW_COMMENT_MODAL");
+export const hideCommentModal = createAction("HIDE_COMMENT_MODAL");
