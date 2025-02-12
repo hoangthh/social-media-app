@@ -3,11 +3,11 @@ import { Container, Grid } from "@mui/material";
 import Header from "../components/Header/Header";
 import PostList from "../components/PostList/PostList";
 import CreatePost from "../components/CreatePost/CreatePost";
-import { Avatar, Card, CardHeader } from "@mui/material";
-import Button from "@mui/material/Button";
 import CreatePostModal from "../components/CreatePostModal/CreatePostModal";
 import LeftNav from "../components/LeftNav/LeftNav";
 import RightTool from "../components/RightTool/RightTool";
+import CommentModal from "../components/CommentModal/CommentModal";
+import ChatWindow from "../components/ChatWindow/ChatWindow";
 
 export default function HomePage() {
   return (
@@ -25,6 +25,7 @@ export default function HomePage() {
         <Grid item xs={12} md={6} lg={4}>
           <CreatePost />
           <CreatePostModal />
+          <CommentModal />
           <PostList />
         </Grid>
 
@@ -37,6 +38,7 @@ export default function HomePage() {
           }}
         >
           <RightTool />
+          <ChatWindow />
         </Grid>
       </Grid>
     </Container>
