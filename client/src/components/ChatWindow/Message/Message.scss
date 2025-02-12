@@ -1,0 +1,43 @@
+.message {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+
+  &--sender,
+  &--receiver {
+    font-family: "Segoe UI Historic", Tahoma, Geneva, Verdana, sans-serif;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 14px;
+
+    &.same {
+      margin-left: 40px;
+    }
+  }
+
+  &--sender {
+    max-width: 200px;
+    color: #fff;
+    background: #6236ff;
+  }
+
+  &--receiver {
+    max-width: 150px;
+    background: #f0f0f0;
+  }
+}
+.message,
+.receiver,
+.sender {
+  display: flex;
+  margin-top: 5px;
+}
+
+.message.receiver {
+  justify-content: flex-start;
+}
+
+.message.sender {
+  justify-content: flex-end;
+}
