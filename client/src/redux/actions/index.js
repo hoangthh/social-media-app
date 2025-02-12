@@ -27,3 +27,9 @@ export const hideModal = createAction("HIDE_CREATE_POST_MODAL");
 
 export const showCommentModal = createAction("SHOW_COMMENT_MODAL");
 export const hideCommentModal = createAction("HIDE_COMMENT_MODAL");
+
+export const showChatList = createAction("SHOW_CHAT_LIST");
+export const hideChatList = createAction("HIDE_CHAT_LIST");
+
+export const showChatWindow = createAction("SHOW_CHAT_WINDOW");
+export const hideChatWindow = createAction("HIDE_CHAT_WINDOW");
