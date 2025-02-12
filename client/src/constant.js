@@ -14,4 +14,11 @@ export const INIT_STATE = {
     isLoading: false,
     data: null,
   },
+  chatList: {
+    isShow: false,
+  },
+  chatWindow: {
+    isShow: false,
+    data: {},
+  },
 };
