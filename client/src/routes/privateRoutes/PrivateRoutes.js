@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as actions from "../../redux/actions";
-import { userState$ } from "../../redux/selectors";
-import * as api from "../../api/";
+import * as api from "../../api";
 
 export default function PrivateRoutes() {
   const [loading, setLoading] = useState(true);
-  const [isUser, setIsUser] = useState(false);
-
+  const [isLogin, setIsLogin] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector(userState$); // user từ Redux
-  console.log(user);
+
   useEffect(() => {
     const fetchUser = async () => {
-      await dispatch(actions.getUser.getUserRequest());
-      console.log(user);
+      const user = await api.fetchUser();
+
       if (user) {
-        setIsUser(true);
-        setLoading(false);
-      } else {
-        setIsUser(false);
+        setIsLogin(true);
+        dispatch(actions.getUser.getUserSuccess(user));
         setLoading(false);
       }
     };
@@ -35,5 +30,5 @@ export default function PrivateRoutes() {
       </p>
     );
 
-  return true ? <Outlet /> : <Navigate to="/login" />;
+  return isLogin ? <Outlet /> : <Navigate to="/login" />;
 }
