@@ -1,72 +1,75 @@
 import React from "react";
 import "./Login.scss";
 import { Button, styled, TextField } from "@mui/material";
-import { Link } from "react-router-dom";
+
+const LoginButton = styled(Button)`
+  width: 360px;
+  padding: 10px 0;
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 20px;
+  color: #fff;
+  background-color: rgb(0, 119, 255);
+  border: none;
+  border-radius: 5px;
+  text-transform: none;
+`;
+
+const CreateAccountButton = styled(Button)`
+  width: 80%;
+  padding: 10px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background-color: rgb(4, 190, 4);
+  border: none;
+  border-radius: 5px;
+  text-transform: none;
+`;
+
+const GoogleButton = styled(Button)`
+  width: 100%;
+  font-size: 15px;
+  margin-top: 20px;
+  color: black;
+  background-color: #fff;
+  border: none;
+  border-radius: 25px;
+  text-transform: none;
+
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+`;
+
+const FacebookButton = styled(Button)`
+  width: 100%;
+  font-size: 15px;
+  margin-top: 20px;
+  color: #fff;
+  background-color: rgb(0, 110, 255);
+  border: none;
+  border-radius: 25px;
+  text-transform: none;
+
+  img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+`;
 
 export default function Login() {
-  const LoginButton = styled(Button)`
-    width: 360px;
-    padding: 10px 0;
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 20px;
-    color: #fff;
-    background-color: rgb(0, 119, 255);
-    border: none;
-    border-radius: 5px;
-    text-transform: none;
-  `;
-
-  const CreateAccountButton = styled(Button)`
-    width: 80%;
-    padding: 10px 0;
-    font-size: 15px;
-    font-weight: 700;
-    color: #fff;
-    background-color: rgb(4, 190, 4);
-    border: none;
-    border-radius: 5px;
-    text-transform: none;
-  `;
-
-  const GoogleButton = styled(Button)`
-    width: 100%;
-    font-size: 15px;
-    margin-top: 20px;
-    color: black;
-    background-color: #fff;
-    border: none;
-    border-radius: 25px;
-    text-transform: none;
-
-    img {
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-    }
-  `;
-
-  const FacebookButton = styled(Button)`
-    width: 100%;
-    font-size: 15px;
-    margin-top: 20px;
-    color: #fff;
-    background-color: rgb(0, 110, 255);
-    border: none;
-    border-radius: 25px;
-    text-transform: none;
-
-    img {
-      width: 30px;
-      height: 30px;
-      margin-right: 10px;
-    }
-  `;
-
   const handleLoginGoogle = () => {
-    console.log(`${process.env.REACT_APP_BACKEND_URL}/auth/google`);
     // Chuyển hướng đến backend để bắt đầu quy trình OAuth
-    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/google`;
+  };
+
+  const handleLoginFacebook = () => {
+    // Chuyển hướng đến backend để bắt đầu quy trình OAuth
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/auth/facebook`;
   };
 
   return (
@@ -106,7 +109,7 @@ export default function Login() {
           Đăng nhập với Google
         </GoogleButton>
 
-        <FacebookButton variant="contained">
+        <FacebookButton variant="contained" onClick={handleLoginFacebook}>
           <img src="/facebook-logo.webp" alt="google-logo" />
           Đăng nhập với Facebook
         </FacebookButton>
