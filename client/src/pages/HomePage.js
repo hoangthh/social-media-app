@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grid } from "@mui/material";
 import Header from "../components/Header/Header";
 import PostList from "../components/PostList/PostList";
@@ -8,8 +8,21 @@ import LeftNav from "../components/LeftNav/LeftNav";
 import RightTool from "../components/RightTool/RightTool";
 import CommentModal from "../components/CommentModal/CommentModal";
 import ChatWindow from "../components/ChatWindow/ChatWindow";
+import io from "socket.io-client";
+import { useSelector } from "react-redux";
+import { userState$ } from "../redux/selectors";
+
+const socket = io(process.env.REACT_APP_BACKEND_URL);
 
 export default function HomePage() {
+  const user = useSelector(userState$);
+
+  // Thêm user hiện tại vào danh sách user online của server
+  useEffect(() => {
+    socket.emit("addUser", user._id);
+    socket.on("getUsers", (users) => {});
+  }, [user._id]);
+
   return (
     <Container maxWidth={false} disableGutters={true}>
       <Header />
@@ -25,7 +38,7 @@ export default function HomePage() {
         <Grid item xs={12} md={6} lg={4}>
           <CreatePost />
           <CreatePostModal />
-          <CommentModal />
+          <CommentModal socket={socket} />
           <PostList />
         </Grid>
 
@@ -38,7 +51,7 @@ export default function HomePage() {
           }}
         >
           <RightTool />
-          <ChatWindow />
+          <ChatWindow socket={socket} />
         </Grid>
       </Grid>
     </Container>
