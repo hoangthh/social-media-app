@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-import * as actions from "./redux/actions";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Login from "./components/Login/Login";

@@ -21,4 +21,7 @@ export const INIT_STATE = {
     isShow: false,
     data: {},
   },
+  token: {
+    accessToken: null,
+  },
 };
