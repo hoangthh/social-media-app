@@ -13,16 +13,23 @@ import { socket } from "./socket/socket.js";
 
 dotenv.config();
 
+// Tạo server Express
 const app = express();
-const server = http.createServer(app); // Tạo server HTTP từ Express
+
+// Tạo HTTP Server từ Express
+const server = http.createServer(app);
+
+// Tạo server Socket.io từ HTTP Server
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
   },
-}); // Tích hợp Socket.IO vào server
+});
 
+// PORT của server
 const PORT = process.env.PORT || 5000;
 
+// URI của MongoDB
 const URI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
@@ -66,7 +73,7 @@ mongooseConnection();
 socket(io);
 
 // Cấu hình routers
-app.use("/", routers);
+app.use("/api", routers);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

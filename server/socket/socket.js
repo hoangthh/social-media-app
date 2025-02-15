@@ -20,13 +20,21 @@ export const socket = (io) => {
     console.log("A user connected:", socket.id);
 
     socket.on("addUser", (userId) => {
-      addUser(userId, socket.id);
+      // Nếu có userId thì mới thêm user vào
+      userId && addUser(userId, socket.id);
       io.emit("getUsers", users);
+    });
+
+    socket.on("sendComment", ({ postId, userId, comment }) => {
+      // Gửi comments tới tất cả socket
+      io.emit("receiveComment", { postId, userId, comment });
     });
 
     socket.on("sendMessage", ({ senderId, receiverId, message }) => {
       const user = getUser(receiverId);
-      io.to(user.socketId).emit("receiveMessage", { senderId, message });
+      // Nếu có user nhận thì mới gửi tin nhắn
+      user &&
+        io.to(user.socketId).emit("receiveMessage", { senderId, message });
     });
 
     // Khi user disconnect, xóa khỏi danh sách

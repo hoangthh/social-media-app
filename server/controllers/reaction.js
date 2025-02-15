@@ -4,18 +4,19 @@ import { ReactionModel } from "../models/reactionModel.js";
 
 export const getReactionPost = async (req, res) => {
   try {
-    const reaction = await ReactionModel.findOne({ postId: req.params.postId });
+    const postId = req.params.postId;
+    const reaction = await ReactionModel.findOne({ postId });
     if (!reaction) {
-      return res.status(404).json({ message: "No reactions found" });
+      return res.status(404).json("Reactions not found");
     }
-    res.status(200).json(reaction.reactions);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching reactions", error });
+    res.status(200).json(reaction);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };
 
-export const reactPost = async (req, res) => {
-  const { userId, postId, reactionType } = req.body;
+export const createReactionPost = async (req, res) => {
+  const { postId, userId, reactionType } = req.body;
 
   try {
     // Kiểm tra xem reactionType có hợp lệ không
@@ -29,19 +30,19 @@ export const reactPost = async (req, res) => {
       "angry",
     ];
     if (!validReactions.includes(reactionType)) {
-      return res.status(400).json({ message: "Invalid reaction type" });
+      return res.status(400).json("Invalid reaction type");
     }
 
     // Tìm bài post bằng postId
     const post = await PostModel.findById(postId);
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json("Post not found");
     }
 
     // Tìm user bằng userId
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json("User not found");
     }
 
     // Tìm reactions của bài post
@@ -80,9 +81,8 @@ export const reactPost = async (req, res) => {
     // Lưu lại dữ liệu
     await reactionsData.save();
 
-    res.status(200).json({ message: "Reaction updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(200).json(reactionsData);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };

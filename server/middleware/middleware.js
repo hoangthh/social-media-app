@@ -3,20 +3,19 @@ import multer from "multer";
 
 // Middleware kiểm tra token
 export const authenticateToken = (req, res, next) => {
-  const token =
-    req.cookies.token || req.headers["authorization"]?.split(" ")[1]; // Lấy token từ cookie hoặc header Authorization
+  const token = req.cookies.token; // Lấy token từ cookies
 
   if (!token) {
-    return res.status(401).json({ error: "Access denied. No token provided." });
+    return res.status(401).json({ error: "Missing token" });
   }
 
   // Kiểm tra và giải mã token
-  jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
     if (err) {
-      return res.status(403).json({ error: "Invalid token." });
+      return res.status(403).json({ error: "Invalid token" });
     }
     // Lưu thông tin người dùng vào request
-    req.user = decoded;
+    req.user = user;
     next();
   });
 };
