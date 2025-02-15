@@ -1,16 +1,17 @@
 import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import * as api from "../../../api/";
+import "./ChatListItem.scss";
 
 export default function ChatListItem({ chat, currentUser }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const chatUserId = chat.members.find((m) => m !== currentUser.id);
+    const chatUserId = chat.members.find((m) => m !== currentUser._id);
 
     const getUser = async () => {
-      const res = await api.fetchUserByUserId(chatUserId);
-      setUser(res);
+      const user = await api.fetchUserByUserId(chatUserId);
+      setUser(user);
     };
     getUser();
   }, [chat, currentUser]);

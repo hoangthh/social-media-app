@@ -17,17 +17,13 @@ export default function ChatList() {
   const user = useSelector(userState$);
   const { isShow } = useSelector(chatListState$);
 
-  const username = "Huy Hoang";
-  const latestMessage = "Bạn: ok mày";
-  const time = "1 giờ";
-
   useEffect(() => {
     const getChats = async () => {
-      const res = await api.fetchChatsByUserId(user?.id);
+      const res = await api.fetchChatsByUserId(user._id);
       setChats(res);
     };
     getChats();
-  }, [user?.id]);
+  }, [user._id]);
 
   useEffect(() => {
     if (searchValue === "") {
@@ -97,7 +93,7 @@ export default function ChatList() {
 
       {/* Chat List */}
       {chats.map((chat) => {
-        const chatUserId = chat.members.find((m) => m !== user.id);
+        const chatUserId = chat.members.find((m) => m !== user._id);
         return (
           <div
             key={chat._id}

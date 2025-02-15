@@ -2,15 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ChatWindow.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { chatWindowState$, userState$ } from "../../redux/selectors";
-import { Avatar, styled, TextField } from "@mui/material";
+import { Avatar, InputAdornment, styled, TextField } from "@mui/material";
 import * as api from "../../api";
-import io from "socket.io-client";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
 import VideocamRoundedIcon from "@mui/icons-material/VideocamRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Message from "./Message/Message";
 import { hideChatWindow } from "../../redux/actions";
+// import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
 
 const SendButton = styled(SendRoundedIcon)`
   color: #0264d3;
@@ -52,12 +54,24 @@ const VideoCallButton = styled(VideocamRoundedIcon)`
   }
 `;
 
-export default function ChatWindow() {
+const EmojiButton = styled(EmojiEmotionsRoundedIcon)`
+  color: #0264d3;
+  border-radius: 50%;
+  transition: all 0.1s;
+
+  &:hover {
+    background: #f0f0f0;
+    cursor: pointer;
+  }
+`;
+
+export default function ChatWindow({ socket }) {
   const [receiver, setReceiver] = useState({});
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const socket = useRef();
+  const [openPicker, setOpenPicker] = useState(false);
+
   const scrollRef = useRef();
 
   const dispatch = useDispatch();
@@ -67,50 +81,38 @@ export default function ChatWindow() {
   const { receiverId, chatId, chat } = data || {};
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
-
     // Nhận tin nhắn realtime
-    socket.current.on("receiveMessage", (data) => {
+    socket.on("receiveMessage", (data) => {
       setArrivalMessage({
         senderId: data?.senderId,
         message: data?.message,
         createdAt: Date.now(),
       });
     });
-  }, []);
 
-  // Nếu có tin nhắn realtime thì thay đổi lại mảng messages
-  useEffect(() => {
+    // Nếu có tin nhắn realtime thì thay đổi lại mảng messages
     arrivalMessage &&
       chat?.members.includes(arrivalMessage.senderId) &&
       setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage, chat]);
+  }, [socket, arrivalMessage, chat]);
 
-  // Thêm user hiện tại vào danh sách user online của server
   useEffect(() => {
-    user && socket.current.emit("addUser", user?.id);
-    socket.current.on("getUsers", (users) => {});
-  }, [user]);
-
-  // Lấy người nhận tin nhắn bằng receiverId
-  useEffect(() => {
+    // Lấy người nhận tin nhắn bằng receiverId
     const fetchUser = async () => {
       const res = await api.fetchUserByUserId(receiverId);
       setReceiver(res);
     };
 
-    if (receiverId !== null && receiverId !== undefined) fetchUser();
-  }, [receiverId]);
+    if (receiverId) fetchUser();
 
-  // Lấy lịch sử tin nhắn khi chọn người nhận
-  useEffect(() => {
+    // Lấy lịch sử tin nhắn khi chọn người nhận
     const getMessages = async () => {
       const res = await api.fetchMessagesByChatId(chatId);
       setMessages(res);
-      console.log("messages: ", messages);
     };
+
     getMessages();
-  }, [chatId]);
+  }, [receiverId, chatId]);
 
   // Scroll xuống tin nhắn mới nhất
   useEffect(() => {
@@ -122,13 +124,13 @@ export default function ChatWindow() {
     // Tin nhắn mới
     const newMessage = {
       chatId,
-      senderId: user.id,
+      senderId: user._id,
       message,
     };
 
     // Gửi tin nhắn lên socket
-    socket.current.emit("sendMessage", {
-      senderId: user?.id,
+    socket.emit("sendMessage", {
+      senderId: user._id,
       receiverId,
       message,
     });
@@ -190,6 +192,11 @@ export default function ChatWindow() {
           size="small"
           slotProps={{
             input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EmojiButton onClick={() => setOpenPicker(!openPicker)} />
+                </InputAdornment>
+              ),
               style: {
                 border: "none",
                 outline: "none",
@@ -210,6 +217,18 @@ export default function ChatWindow() {
             !e.shiftKey && e.key === "Enter" && sendMesssage(e);
           }}
         />
+        {openPicker && (
+          <div className="chat-window--footer__emoji-box">
+            <Picker
+              onEmojiSelect={(e) => setMessage((prev) => prev + e.native)}
+              locale="vi"
+              autoFocus="true"
+              navPosition="bottom"
+              previewPosition="none"
+              skinTonePosition="none"
+            />
+          </div>
+        )}
         <SendButton onClick={sendMesssage} />
       </div>
     </div>

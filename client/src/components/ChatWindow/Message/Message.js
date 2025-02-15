@@ -9,8 +9,8 @@ export default function Message({
   receiver,
 }) {
   const isSameSenderNext = nextMessage?.senderId === message.senderId; // Kiểm tra sender tiếp theo
-  const isSender = message.senderId === currentUser.id; // Kiểm tra có phải người gửi không
-  const isReceiver = message.senderId !== currentUser.id; // Kiểm tra có phải receiver không
+  const isSender = message.senderId === currentUser._id; // Kiểm tra có phải người gửi không
+  const isReceiver = message.senderId !== currentUser._id; // Kiểm tra có phải receiver không
 
   return (
     <div className={`message ${isSender ? "sender" : "receiver"}`}>
