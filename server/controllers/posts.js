@@ -108,7 +108,7 @@ export const createPost = async (req, res) => {
 
     res.status(200).send(newPost);
   } catch (err) {
-    return res.status(500).json({ name: err.name, message: err.message });
+    return res.status(500).json(err);
   }
 };
 
@@ -124,6 +124,6 @@ export const updatePost = async (req, res) => {
 
     res.status(200).json(post);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json(err);
   }
 };
