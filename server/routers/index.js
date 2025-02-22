@@ -9,17 +9,19 @@ import commentRoutes from "./comments.js";
 import userRoutes from "./users.js";
 import chatRoutes from "./chats.js";
 import messageRoutes from "./messages.js";
+import friendRoutes from "./friends.js";
 
 const router = express.Router();
 
 // Sử dụng các route con
 router.use("/auth", authRoutes); // Route cho /auth
 router.use("/posts", authenticateToken, postRoutes); // Route cho /posts
-router.use("/reaction", authenticateToken, reactionRoutes); // Route cho /posts
-router.use("/comments", authenticateToken, commentRoutes); // Route cho /comment
-router.use("/users", authenticateToken, userRoutes); // Route cho /user
-router.use("/chats", authenticateToken, chatRoutes); // Route cho /chat
-router.use("/messages", authenticateToken, messageRoutes); // Route cho /message
+router.use("/reaction", authenticateToken, reactionRoutes); // Route cho /reaction
+router.use("/comments", authenticateToken, commentRoutes); // Route cho /comments
+router.use("/users", authenticateToken, userRoutes); // Route cho /users
+router.use("/chats", authenticateToken, chatRoutes); // Route cho /chats
+router.use("/messages", authenticateToken, messageRoutes); // Route cho /messages
+router.use("/friends", authenticateToken, friendRoutes); // Route cho /friends
 
 // Export router
 export default router;
