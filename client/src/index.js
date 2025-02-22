@@ -7,6 +7,7 @@ import createSagaMiddleware from "redux-saga";
 import reducers from "./redux/reducers";
 import mySaga from "./redux/sagas";
 import { configureStore } from "@reduxjs/toolkit";
+import { SocketProvider } from "./socket/SocketProvider";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -25,6 +26,8 @@ sagaMiddleware.run(mySaga);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <App />
+    <SocketProvider>
+      <App />
+    </SocketProvider>
   </Provider>
 );
