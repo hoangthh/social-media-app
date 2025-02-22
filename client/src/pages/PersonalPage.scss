@@ -1,0 +1,65 @@
+.personal-page {
+  &--header {
+    display: flex;
+    flex-direction: column;
+    width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+
+    &__wrapper {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+
+    &__cover-img {
+      width: 100%;
+      height: 400px;
+      position: relative;
+
+      &--action {
+        position: absolute;
+        right: 30px;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+        background: #fff;
+        padding: 10px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        font-size: 15px;
+
+        &:hover {
+          background-color: #ccc;
+          cursor: pointer;
+        }
+      }
+    }
+
+    &__main {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      width: 100%;
+      margin-top: -30px;
+      padding: 0 30px;
+
+      &--avatar {
+        position: relative;
+      }
+
+      &--wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+
+  &--post-list {
+    width: 600px;
+    margin: 0 auto;
+  }
+}
