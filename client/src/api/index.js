@@ -64,9 +64,13 @@ export const fetchChatsByUserId = async (userId) => {
   return res.data;
 };
 
-export const searchUserByName = async (name) => {
-  const res = await axiosInstance.get(`/api/users/search?name=${name}`);
-  return res;
+export const searchUsersByName = async (name) => {
+  try {
+    const res = await axiosInstance.get(`/api/users/search?name=${name}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const fetchUserByUserId = async (userId) => {
@@ -86,4 +90,54 @@ export const fetchMessagesByChatId = async (chatId) => {
 export const sendMessage = async (message) => {
   const res = await axiosInstance.post(`/api/messages`, message);
   return res.data;
+};
+
+export const fetchFriendsByUserId = async (userId) => {
+  try {
+    const res = await axiosInstance.get(`/api/friends/${userId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const fetchMutualFriends = async (userId) => {
+  try {
+    const res = await axiosInstance.get(`/api/friends/mutual/${userId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const createFriendRequest = async (senderId, receiverId) => {
+  try {
+    const res = await axiosInstance.post(`/api/friends`, {
+      senderId,
+      receiverId,
+    });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const acceptFriendRequest = async (requestId) => {
+  try {
+    const res = await axiosInstance.put(`/api/friends/${requestId}`, {
+      status: "accepted",
+    });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteFriendRequest = async (requestId) => {
+  try {
+    const res = await axiosInstance.delete(`/api/friends/${requestId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
