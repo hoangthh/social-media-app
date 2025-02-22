@@ -13,6 +13,7 @@ import { hideChatWindow } from "../../redux/actions";
 // import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import EmojiEmotionsRoundedIcon from "@mui/icons-material/EmojiEmotionsRounded";
+import { useSocket } from "../../socket/SocketProvider";
 
 const SendButton = styled(SendRoundedIcon)`
   color: #0264d3;
@@ -65,7 +66,8 @@ const EmojiButton = styled(EmojiEmotionsRoundedIcon)`
   }
 `;
 
-export default function ChatWindow({ socket }) {
+export default function ChatWindow() {
+  const socket = useSocket();
   const [receiver, setReceiver] = useState({});
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -82,7 +84,7 @@ export default function ChatWindow({ socket }) {
 
   useEffect(() => {
     // Nhận tin nhắn realtime
-    socket.on("receiveMessage", (data) => {
+    socket?.on("receiveMessage", (data) => {
       setArrivalMessage({
         senderId: data?.senderId,
         message: data?.message,
@@ -129,7 +131,7 @@ export default function ChatWindow({ socket }) {
     };
 
     // Gửi tin nhắn lên socket
-    socket.emit("sendMessage", {
+    socket?.emit("sendMessage", {
       senderId: user._id,
       receiverId,
       message,
@@ -168,7 +170,7 @@ export default function ChatWindow({ socket }) {
           const nextMessage = messages[index + 1]; // Lấy tin nhắn tiếp theo
 
           return (
-            <div key={message._id} ref={scrollRef}>
+            <div key={index} ref={scrollRef}>
               <Message
                 nextMessage={nextMessage}
                 message={message}

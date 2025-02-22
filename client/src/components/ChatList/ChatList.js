@@ -32,17 +32,8 @@ export default function ChatList() {
     }
 
     const delaySearch = setTimeout(async () => {
-      try {
-        const res = await api.searchUserByName(searchValue);
-        if (res.status === 200) {
-          setSearchResult(res.data);
-        }
-      } catch (error) {
-        console.error(
-          "Lỗi tìm kiếm người dùng:",
-          error.response?.data?.message || error.message
-        );
-      }
+      const res = await api.searchUsersByName(searchValue);
+      setSearchResult(res);
     }, 500); // Đợi 300ms trước khi gọi API
 
     return () => clearTimeout(delaySearch); // Xóa timeout khi searchValue thay đổi trước khi hết thời gian chờ

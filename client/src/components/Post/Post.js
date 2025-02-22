@@ -82,7 +82,7 @@ const Post = ({ post, dispatch }) => {
   };
 
   return (
-    <Card>
+    <Card sx={{ marginTop: "10px" }}>
       <CardHeader
         avatar={<Avatar>A</Avatar>}
         title={post.author}

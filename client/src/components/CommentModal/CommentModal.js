@@ -8,6 +8,7 @@ import * as actions from "../../redux/actions";
 import Post from "../Post/Post";
 import CommentItem from "./CommentItem/CommentItem";
 import * as api from "../../api";
+import { useSocket } from "../../socket/SocketProvider";
 
 const CommentInput = styled(TextField)`
   width: 100%;
@@ -27,7 +28,8 @@ const SendButtonDisabled = styled(SendRoundedIcon)`
   cursor: not-allowed;
 `;
 
-export default function CommentModal({ socket }) {
+export default function CommentModal() {
+  const socket = useSocket();
   const [comments, setComments] = useState(null);
   const [comment, setComment] = useState("");
   const [arrivalComment, setArrivalComment] = useState(null);
@@ -42,7 +44,7 @@ export default function CommentModal({ socket }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.on("receiveComment", (data) => {
+    socket?.on("receiveComment", (data) => {
       setArrivalComment({
         postId: data?.postId,
         userId: data?.userId,

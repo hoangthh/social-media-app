@@ -1,7 +1,6 @@
-import { Avatar, Box, Button, Card, Modal } from "@mui/material";
+import { Avatar, Box, Button, Card } from "@mui/material";
 import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { modalState$ } from "../../redux/selectors";
+import { useDispatch } from "react-redux";
 import { showModal } from "../../redux/actions";
 
 export default function CreatePost() {

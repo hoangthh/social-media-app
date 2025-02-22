@@ -1,32 +1,94 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.scss";
-import { TextField, AppBar, Stack, Avatar, Tooltip } from "@mui/material";
+import {
+  TextField,
+  AppBar,
+  Stack,
+  Avatar,
+  Tooltip,
+  styled,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
 import SportsEsportsOutlinedIcon from "@mui/icons-material/SportsEsportsOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import OndemandVideoRoundedIcon from "@mui/icons-material/OndemandVideoRounded";
+import SportsEsportsRoundedIcon from "@mui/icons-material/SportsEsportsRounded";
+import StorefrontRoundedIcon from "@mui/icons-material/StorefrontRounded";
+import Diversity3RoundedIcon from "@mui/icons-material/Diversity3Rounded";
 import { useDispatch, useSelector } from "react-redux";
 import { hideChatList, showChatList } from "../../redux/actions";
 import { chatListState$, userState$ } from "../../redux/selectors";
 import ChatList from "../ChatList/ChatList";
+import * as api from "../../api";
+import { Link } from "react-router-dom";
+
+const DeleteSearchIcon = styled(CloseRoundedIcon)`
+  &:hover {
+    cursor: pointer;
+  }
+`;
 
 const navbarItems = [
-  { title: "Trang chủ", icon: <HomeOutlinedIcon /> },
-  { title: "Video", icon: <OndemandVideoOutlinedIcon /> },
-  { title: "Trò chơi", icon: <SportsEsportsOutlinedIcon /> },
-  { title: "Marketplace", icon: <StorefrontOutlinedIcon /> },
-  { title: "Nhóm", icon: <Diversity3OutlinedIcon /> },
+  {
+    title: "Trang chủ",
+    defaultIcon: <HomeOutlinedIcon />,
+    activeIcon: <HomeRoundedIcon color="primary" />,
+  },
+  {
+    title: "Video",
+    defaultIcon: <OndemandVideoOutlinedIcon />,
+    activeIcon: <OndemandVideoRoundedIcon color="primary" />,
+  },
+  {
+    title: "Trò chơi",
+    defaultIcon: <SportsEsportsOutlinedIcon />,
+    activeIcon: <SportsEsportsRoundedIcon color="primary" />,
+  },
+  {
+    title: "Marketplace",
+    defaultIcon: <StorefrontOutlinedIcon />,
+    activeIcon: <StorefrontRoundedIcon color="primary" />,
+  },
+  {
+    title: "Nhóm",
+    defaultIcon: <Diversity3OutlinedIcon />,
+    activeIcon: <Diversity3RoundedIcon color="primary" />,
+  },
 ];
 
 export default function Header() {
+  const [activeNavbarItem, setActiveNavbarItem] = useState(
+    navbarItems[0].title
+  );
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResult, setSearchResult] = useState("");
+
   const dispatch = useDispatch();
 
   const user = useSelector(userState$);
 
   const { isShow } = useSelector(chatListState$);
+
+  useEffect(() => {
+    if (searchValue === "") {
+      setSearchResult(null);
+      return;
+    }
+
+    const delaySearch = setTimeout(async () => {
+      const res = await api.searchUsersByName(searchValue);
+      console.log(res);
+      setSearchResult(res);
+    }, 500); // Đợi 300ms trước khi gọi API
+
+    return () => clearTimeout(delaySearch); // Xóa timeout khi searchValue thay đổi trước khi hết thời gian chờ
+  }, [searchValue]);
 
   const handleToggleChatList = () => {
     if (isShow) {
@@ -37,7 +99,7 @@ export default function Header() {
   };
 
   const handleNavbarClick = (item) => {
-    console.log(item);
+    setActiveNavbarItem(item.title);
   };
 
   return (
@@ -49,24 +111,31 @@ export default function Header() {
       <Stack direction="row" justifyContent="space-between">
         {/* Left navbar */}
         <div className="left-navbar">
-          <img
-            alt=""
-            src="./facebook-logo.webp"
-            style={{
-              width: 40,
-              height: 40,
-              margin: "5px 10px",
-            }}
-          />
+          <Link to="/">
+            <img
+              className="left-navbar--logo"
+              src="./facebook-logo.webp"
+              alt="logo"
+            />
+          </Link>
           <TextField
             id="search-input"
             placeholder="Tìm kiếm trên Facebook"
             size="small"
+            onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
             slotProps={{
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {searchValue && (
+                      <DeleteSearchIcon onClick={() => setSearchValue("")} />
+                    )}
                   </InputAdornment>
                 ),
                 style: {
@@ -83,6 +152,29 @@ export default function Header() {
               outline: "none",
             }}
           />
+
+          {/* Search Result */}
+          {searchResult && (
+            <div className="left-navbar--search">
+              {searchResult?.map((item) => (
+                <Link
+                  // href={`/user/${item?._id}`}
+                  className="left-navbar--search__link"
+                  to={`/user/${item?._id}`}
+                  key={item?._id}
+                >
+                  <div className="chat-list--item">
+                    <Avatar src={item?.avatar} />
+                    <div className="chat-list--item--info">
+                      <p className="chat-list--item--info__header">
+                        {item?.name}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Main navbar */}
@@ -93,7 +185,15 @@ export default function Header() {
               key={item.title}
               onClick={() => handleNavbarClick(item)}
             >
-              <div className="main-navbar--item">{item.icon}</div>
+              <div
+                className={`main-navbar--item ${
+                  activeNavbarItem === item.title ? "active" : ""
+                }`}
+              >
+                {activeNavbarItem === item.title
+                  ? item.activeIcon
+                  : item.defaultIcon}
+              </div>
             </Tooltip>
           ))}
         </div>
@@ -101,7 +201,7 @@ export default function Header() {
         {/* Right navbar */}
         <div className="right-navbar">
           <Tooltip title="Messenger" onClick={handleToggleChatList}>
-            <div className="right-navbar--item">
+            <div className={`right-navbar--item`}>
               <i className="fa-brands fa-facebook-messenger"></i>
             </div>
           </Tooltip>
@@ -113,7 +213,7 @@ export default function Header() {
           </Tooltip>
 
           <Tooltip title="Tài khoản">
-            <Avatar src={user.avatar}></Avatar>
+            <Avatar src={user?.avatar}></Avatar>
           </Tooltip>
         </div>
       </Stack>

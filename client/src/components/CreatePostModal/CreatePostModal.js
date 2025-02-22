@@ -19,7 +19,6 @@ export default function CreatePostModal() {
   const [previewImage, setPreviewImage] = useState();
 
   const { isShow } = useSelector(modalState$);
-  console.log("post create modal", isShow);
 
   const dispatch = useDispatch();
 

@@ -1,6 +1,30 @@
 .left-navbar {
   display: flex;
   align-items: center;
+  position: relative;
+
+  &--logo {
+    width: 40px;
+    height: 40px;
+    margin: 5px 10px;
+  }
+
+  &--search {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    width: 100%;
+    height: fit-content;
+    max-height: 50vh;
+    padding: 10px;
+    box-shadow: 2px 10px 5px rgba(0, 0, 0, 0.3);
+
+    &__link {
+      text-decoration: none;
+      color: black;
+    }
+  }
 }
 
 .main-navbar {
@@ -8,11 +32,14 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-right: 150px;
 
   &--item {
     padding: 10px 40px;
-    border-radius: 10px;
+    border-radius: 5px;
+
+    &.active {
+      border-bottom: 4px solid blue;
+    }
 
     &:hover {
       background-color: #dadada;
