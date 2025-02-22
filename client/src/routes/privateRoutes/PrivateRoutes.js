@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as actions from "../../redux/actions";
 import * as api from "../../api";
+import Header from "../../components/Header/Header";
+import { useSocket } from "../../socket/SocketProvider";
 
 export default function PrivateRoutes() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const socket = useSocket();
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,18 +22,30 @@ export default function PrivateRoutes() {
         setIsLogin(true);
         dispatch(actions.getUser.getUserSuccess(user));
         setLoading(false);
+
+        // Thêm user hiện tại vào danh sách user online của server
+        socket?.emit("addUser", user._id);
+      } else {
+        navigate("/login", { replace: true });
       }
     };
 
     fetchUser();
-  }, [dispatch]);
+  }, [dispatch, navigate, socket]);
 
   if (loading)
     return (
       <p>
-        You have to <a href="/login">login</a>
+        Loading to <a href="/login">login</a> ...
       </p>
     );
 
-  return isLogin ? <Outlet /> : <Navigate to="/login" />;
+  return isLogin ? (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/login" />
+  );
 }
