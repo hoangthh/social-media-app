@@ -1,7 +1,10 @@
 import { Avatar, Box, Button, Card } from "@mui/material";
 import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../../redux/actions";
+import { userState$ } from "../../redux/selectors";
+import { getLastWordOfName } from "../../helpers/string";
+import { Link } from "react-router-dom";
 
 export default function CreatePost() {
   const cardStyles = {
@@ -21,6 +24,8 @@ export default function CreatePost() {
     textAlign: "start",
   };
 
+  const user = useSelector(userState$);
+
   const dispatch = useDispatch();
 
   const openCreatePostModal = useCallback(() => {
@@ -30,14 +35,16 @@ export default function CreatePost() {
   return (
     <Box>
       <Card sx={cardStyles}>
-        <Avatar />
+        <Link to={`/user/${user._id}`}>
+          <Avatar src={user.avatar} />
+        </Link>
         <Button
           variant="outlined"
           sx={buttonStyles}
           color="inherit"
           onClick={openCreatePostModal}
         >
-          Hoàng ơi, bạn đang nghĩ gì thế?
+          {getLastWordOfName(user.name)} ơi, bạn đang nghĩ gì thế?
         </Button>
       </Card>
     </Box>

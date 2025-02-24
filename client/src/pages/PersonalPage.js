@@ -18,6 +18,7 @@ import MessengerButton from "../components/MessengerButton/MessengerButton";
 import { useSelector } from "react-redux";
 import { userState$ } from "../redux/selectors";
 import MutualFriend from "../components/MutualFriend/MutualFriend";
+import ChatWindow from "../components/ChatWindow/ChatWindow";
 
 const CoverImg = styled(CardMedia)`
   width: 100%;
@@ -181,6 +182,8 @@ export default function PersonalPage() {
       <div className="personal-page--post-list">
         <PostList />
       </div>
+
+      <ChatWindow />
     </Container>
   );
 }

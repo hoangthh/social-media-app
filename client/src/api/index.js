@@ -64,6 +64,14 @@ export const fetchChatsByUserId = async (userId) => {
   return res.data;
 };
 
+export const createChat = async (senderId, receiverId) => {
+  const res = await axiosInstance.post(`/api/chats`, {
+    senderId,
+    receiverId,
+  });
+  return res.data;
+};
+
 export const searchUsersByName = async (name) => {
   try {
     const res = await axiosInstance.get(`/api/users/search?name=${name}`);

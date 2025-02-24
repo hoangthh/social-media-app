@@ -20,36 +20,48 @@ const activeStyle = {
 export default function RelationshipButton({ personalUserId, sx }) {
   const [friend, setFriend] = useState(false);
 
-  const user = useSelector(userState$);
+  const currentUser = useSelector(userState$);
 
   useEffect(() => {
     const fetchFriends = async () => {
-      const friends = await api.fetchFriendsByUserId(user?._id);
+      const friends = await api.fetchFriendsByUserId(currentUser?._id);
 
       const friend =
         friends.find(
           (friend) =>
-            (friend.senderId === user._id &&
+            (friend.senderId === currentUser._id &&
               friend.receiverId === personalUserId) ||
             (friend.senderId === personalUserId &&
-              friend.receiverId === user._id)
+              friend.receiverId === currentUser._id)
         ) || null;
 
       setFriend(friend);
     };
 
     fetchFriends();
-  }, [user?._id, personalUserId]);
+  }, [currentUser?._id, personalUserId]);
 
   const handleToogleFriendStatus = async () => {
     if (!friend) {
-      const res = await api.createFriendRequest(user?._id, personalUserId);
+      const res = await api.createFriendRequest(
+        currentUser?._id,
+        personalUserId
+      );
       setFriend(res);
       return;
     }
-    if (friend.status === "pending" || friend.status === "accepted") {
+    if (friend.status === "pending" && friend.receiverId === currentUser._id) {
+      const res = await api.acceptFriendRequest(friend._id);
+      setFriend(res);
+      return;
+    }
+    if (
+      (friend.status === "pending" && friend.senderId === currentUser._id) ||
+      friend.status === "accepted"
+    ) {
       await api.deleteFriendRequest(friend._id);
       setFriend(null);
+      return;
     }
   };
 
@@ -63,8 +75,10 @@ export default function RelationshipButton({ personalUserId, sx }) {
       <span>
         {!friend?.status
           ? "Thêm bạn bè"
-          : friend.status === "pending"
+          : friend.status === "pending" && friend.senderId === currentUser._id
           ? "Hủy lời mời"
+          : friend.status === "pending" && friend.senderId !== currentUser._id
+          ? "Chấp nhận lời mời"
           : "Bạn bè"}
       </span>
     </Button>

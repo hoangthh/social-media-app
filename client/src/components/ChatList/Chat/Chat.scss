@@ -1,4 +1,4 @@
-.chat-list--item {
+.chat {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -23,6 +23,7 @@
       font-weight: 350;
 
       &--latest-message {
+        font-size: 13px;
         margin-right: 10px;
       }
 

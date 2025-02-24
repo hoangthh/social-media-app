@@ -6,7 +6,7 @@ import * as api from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { hideChatList, showChatWindow } from "../../redux/actions";
 import { chatListState$, userState$ } from "../../redux/selectors";
-import ChatListItem from "./ChatListItem/ChatListItem";
+import Chat from "./Chat/Chat";
 
 export default function ChatList() {
   const [chats, setChats] = useState([]);
@@ -14,16 +14,16 @@ export default function ChatList() {
   const [searchResult, setSearchResult] = useState(null);
 
   const dispatch = useDispatch();
-  const user = useSelector(userState$);
+  const currentUser = useSelector(userState$);
   const { isShow } = useSelector(chatListState$);
 
   useEffect(() => {
     const getChats = async () => {
-      const res = await api.fetchChatsByUserId(user._id);
+      const res = await api.fetchChatsByUserId(currentUser._id);
       setChats(res);
     };
     getChats();
-  }, [user._id]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (searchValue === "") {
@@ -84,13 +84,15 @@ export default function ChatList() {
 
       {/* Chat List */}
       {chats.map((chat) => {
-        const chatUserId = chat.members.find((m) => m !== user._id);
+        const chatUserId = chat.members.find(
+          (member) => member !== currentUser._id
+        );
         return (
           <div
             key={chat._id}
             onClick={() => handleSelectChat(chatUserId, chat._id, chat)}
           >
-            <ChatListItem chat={chat} currentUser={user} />
+            <Chat chat={chat} />
           </div>
         );
       })}

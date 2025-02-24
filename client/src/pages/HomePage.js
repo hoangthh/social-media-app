@@ -25,6 +25,7 @@ export default function HomePage() {
           <CreatePostModal />
           <CommentModal />
           <PostList />
+          <ChatWindow />
         </Grid>
 
         <Grid
@@ -36,7 +37,6 @@ export default function HomePage() {
           }}
         >
           <RightTool />
-          <ChatWindow />
         </Grid>
       </Grid>
     </Container>

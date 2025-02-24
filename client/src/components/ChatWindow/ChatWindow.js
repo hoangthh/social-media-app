@@ -151,7 +151,7 @@ export default function ChatWindow() {
     <div className={`chat-window ${isShow ? "show" : "hide"}`}>
       {/* Header */}
       <div className="chat-window--header">
-        <Avatar src={receiver?.avatar} sx={{ width: "30px", height: "30px" }} />
+        <Avatar src={receiver?.avatar} sx={{ width: "32px", height: "32px" }} />
         <div className="chat-window--header--info">
           <p className="chat-window--header--info__name">{receiver?.name}</p>
           <p className="chat-window--header--info__time">

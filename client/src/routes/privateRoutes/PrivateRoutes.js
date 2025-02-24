@@ -5,6 +5,7 @@ import * as actions from "../../redux/actions";
 import * as api from "../../api";
 import Header from "../../components/Header/Header";
 import { useSocket } from "../../socket/SocketProvider";
+import { convertToPascalCase } from "../../helpers/string";
 
 export default function PrivateRoutes() {
   const [loading, setLoading] = useState(true);
@@ -19,8 +20,9 @@ export default function PrivateRoutes() {
       const user = await api.fetchUser();
 
       if (user) {
+        const formatUser = { ...user, name: convertToPascalCase(user.name) };
         setIsLogin(true);
-        dispatch(actions.getUser.getUserSuccess(user));
+        dispatch(actions.getUser.getUserSuccess(formatUser));
         setLoading(false);
 
         // Thêm user hiện tại vào danh sách user online của server

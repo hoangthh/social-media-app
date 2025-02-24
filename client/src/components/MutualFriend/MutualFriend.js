@@ -5,7 +5,6 @@ import * as api from "../../api";
 
 const FriendCount = styled(Typography)`
   color: #65686c;
-  font-size: 20px;
   font-weight: 400;
 `;
 
@@ -45,7 +44,7 @@ export default function MutualFriend({
         {showFriends &&
           acceptedFriends?.length > 0 &&
           `${acceptedFriends?.length} người bạn`}
-        {showFriends && showMutualFriends && mutualFriends.length > 0 && " • "}
+        {showFriends && showMutualFriends && mutualFriends.length > 0 && " •"}
         {showMutualFriends &&
           mutualFriends?.length > 0 &&
           `${mutualFriends?.length} bạn chung`}

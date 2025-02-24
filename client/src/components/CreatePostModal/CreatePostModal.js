@@ -1,12 +1,24 @@
-import { Avatar, Button, Modal, TextField } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Modal,
+  styled,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useCallback, useRef, useState } from "react";
-import { modalState$ } from "../../redux/selectors";
+import { modalState$, userState$ } from "../../redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, hideModal } from "../../redux/actions";
 import "./CreatePostModal.scss";
 import PeopleIcon from "@mui/icons-material/People";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
+import { Link } from "react-router-dom";
+
+const Username = styled(Typography)`
+  font-weight: bold;
+`;
 
 export default function CreatePostModal() {
   const [data, setData] = useState({
@@ -19,6 +31,7 @@ export default function CreatePostModal() {
   const [previewImage, setPreviewImage] = useState();
 
   const { isShow } = useSelector(modalState$);
+  const user = useSelector(userState$);
 
   const dispatch = useDispatch();
 
@@ -92,10 +105,9 @@ export default function CreatePostModal() {
 
   const userName = "Hoàng";
 
-  const fullName = "Huy Hoàng";
-
   const body = (
     <div className="modal--body">
+      {/* Header */}
       <div className="modal--body--header">
         <h3>Tạo bài viết</h3>
         <div
@@ -105,22 +117,37 @@ export default function CreatePostModal() {
           <i className="fa-solid fa-xmark"></i>
         </div>
       </div>
+
+      {/* Info */}
       <div className="modal--body--info">
-        <Avatar />
+        <Link to={`/user/${user._id}`}>
+          <Avatar src={user.avatar} />
+        </Link>
+
+        {/* Info Detail */}
         <div className="modal--body--info__detail">
-          <p>{fullName}</p>
+          {/* Username */}
+          <Username>{user.name}</Username>
+
+          {/* Role Button */}
           <Button
             variant="contained"
             size="small"
             color="inherit"
             startIcon={<PeopleIcon />}
             endIcon={<ArrowDropDownIcon />}
-            sx={{ marginTop: -2, textTransform: "none", background: "#ccc" }}
+            sx={{
+              textTransform: "none",
+              background: "#e2e5e9",
+              padding: "1px 5px",
+            }}
           >
             Bạn bè
           </Button>
         </div>
       </div>
+
+      {/* Form */}
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           multiline
@@ -129,7 +156,7 @@ export default function CreatePostModal() {
           placeholder={`${userName} ơi, bạn đang nghĩ gì thế?`}
           value={data.content}
           onChange={handleContentChange}
-          sx={{ marginTop: "10px" }}
+          sx={{ marginTop: "20px" }}
         />
 
         {data.attachment ? (
@@ -175,6 +202,7 @@ export default function CreatePostModal() {
         />
       </form>
 
+      {/* Button */}
       <div className="modal--body--button" onClick={handleSubmit}>
         <Button
           variant="contained"

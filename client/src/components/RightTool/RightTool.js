@@ -1,14 +1,14 @@
 import React from "react";
-import "./RightToool.scss";
+import "./RightTool.scss";
 import FriendRequestList from "../FriendRequestList/FriendRequestList";
-import Contact from "../Contact/Contact";
+import ContactList from "../ContactList/ContactList";
 
 export default function RightTool() {
   return (
     <div className="right-tool">
       <FriendRequestList />
-      <Contact />
-      <div className="">Group</div>
+      <ContactList />
+      {/* <div className="">Group</div> */}
     </div>
   );
 }

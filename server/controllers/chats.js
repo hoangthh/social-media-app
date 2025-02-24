@@ -1,4 +1,5 @@
 import { ChatModel } from "../models/chatModel.js";
+import { MessageModel } from "../models/messageModel.js";
 
 export const getChatsByUserId = async (req, res) => {
   try {
@@ -13,8 +14,17 @@ export const getChatsByUserId = async (req, res) => {
 
 export const createChat = async (req, res) => {
   try {
+    const senderId = req.body.senderId;
+    const receiverId = req.body.receiverId;
+
+    const existingChat = await ChatModel.findOne({
+      members: { $all: [senderId, receiverId] },
+    });
+
+    if (existingChat) return res.status(200).json(existingChat);
+
     const newChat = new ChatModel({
-      members: [req.body.senderId, req.body.receiverId],
+      members: [senderId, receiverId],
     });
 
     const savedChat = await newChat.save();

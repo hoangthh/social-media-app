@@ -15,6 +15,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding: 15px 0;
     border-bottom: 1px solid #ccc;
     user-select: none;
 
@@ -39,13 +40,14 @@
   }
 
   &--info {
+    margin-top: 10px;
     margin-left: 15px;
-    margin-top: -5px;
     display: flex;
-    flex-direction: row;
     align-items: center;
+
     &__detail {
-      margin-top: -5px;
+      display: flex;
+      flex-direction: column;
       margin-left: 10px;
     }
   }
