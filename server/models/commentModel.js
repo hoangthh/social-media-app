@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
-    postId: {
+    userId: {
       type: String,
       require: true,
     },
-    userId: {
+    postId: {
       type: String,
       require: true,
     },

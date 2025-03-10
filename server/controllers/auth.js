@@ -19,7 +19,7 @@ export const loginGoogleCallback = (req, res) => {
       const token = jwt.sign(
         { userId: user.id }, // Lấy ID người dùng từ passport (user)
         process.env.JWT_SECRET_KEY, // Key bảo mật cho JWT
-        { expiresIn: "1h" } // Token hết hạn sau 1 giờ
+        { expiresIn: "7d" } // Token hết hạn sau 1 giờ
       );
 
       // Lưu token vào cookie

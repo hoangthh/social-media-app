@@ -25,6 +25,28 @@ export const socket = (io) => {
       io.emit("getUsers", users);
     });
 
+    socket.on(
+      "reactionPostNotification",
+      ({ senderId, receiverId, message }) => {
+        const user = getUser(receiverId);
+        user &&
+          io
+            .to(user.socketId)
+            .emit("receiveReactionPostNotification", { senderId, message });
+      }
+    );
+
+    socket.on(
+      "commentPostNotification",
+      ({ senderId, receiverId, message }) => {
+        const user = getUser(receiverId);
+        user &&
+          io
+            .to(user.socketId)
+            .emit("receiveCommentPostNotification", { senderId, message });
+      }
+    );
+
     socket.on("sendComment", ({ postId, userId, comment }) => {
       // Gửi comments tới tất cả socket
       io.emit("receiveComment", { postId, userId, comment });

@@ -10,6 +10,7 @@ import userRoutes from "./users.js";
 import chatRoutes from "./chats.js";
 import messageRoutes from "./messages.js";
 import friendRoutes from "./friends.js";
+import notificationRoutes from "./notifications.js";
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ router.use("/users", authenticateToken, userRoutes); // Route cho /users
 router.use("/chats", authenticateToken, chatRoutes); // Route cho /chats
 router.use("/messages", authenticateToken, messageRoutes); // Route cho /messages
 router.use("/friends", authenticateToken, friendRoutes); // Route cho /friends
+router.use("/notifications", authenticateToken, notificationRoutes); // Route cho /notifications
 
 // Export router
 export default router;

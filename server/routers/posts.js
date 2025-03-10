@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get("/", getPosts);
 
-router.post("/create", upload.single("attachment"), createPost);
+router.post("/", upload.single("attachment"), createPost);
 
-router.post("/update", updatePost);
+router.put("/:postId", upload.single("attachment"), updatePost);
 
 export default router;

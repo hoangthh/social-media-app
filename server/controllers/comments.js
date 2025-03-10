@@ -1,18 +1,31 @@
 import { CommentModel } from "../models/commentModel.js";
-import { UserModel } from "../models/userModel.js";
+import { PostModel } from "../models/postModel.js";
+import {
+  notificationMessage,
+  findAndCreateNotification,
+} from "./notifications.js";
 
 export const createComment = async (req, res) => {
   try {
-    const { postId, userId, comment } = req.body;
+    const { userId, postId, comment } = req.body;
 
     // Tạo comment mới
     const newComment = await CommentModel.create({
-      postId,
       userId,
+      postId,
       comment,
     });
 
-    res.status(200).json(newComment);
+    const post = await PostModel.findById(postId);
+
+    await findAndCreateNotification(
+      userId,
+      post.userId,
+      "comment",
+      notificationMessage.comment
+    );
+
+    return res.status(200).json(newComment);
   } catch (err) {
     return res.status(500).json(err);
   }

@@ -6,25 +6,13 @@ const schema = new mongoose.Schema({
     ref: "Post",
     required: true, // Tham chiếu đến bài post
   },
-  reactions: {
-    like: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã like
-    },
-    favourite: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã like
-    },
-    haha: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã haha
-    },
-    wow: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã wow
-    },
-    sad: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã sad
-    },
-    angry: {
-      users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã angry
-    },
+  reaction: {
+    like: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã like
+    favourite: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã favourite
+    haha: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã haha
+    wow: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã wow
+    sad: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã sad
+    angry: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // Người dùng đã angry
   },
 });
 

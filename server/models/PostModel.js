@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
-    content: {
-      type: String,
-      require: true,
-    },
-    author: {
+    userId: {
       type: String,
       require: true,
       default: "Anonymous",
+    },
+    content: {
+      type: String,
+      require: true,
     },
     attachment: {
       type: String,
