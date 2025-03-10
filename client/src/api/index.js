@@ -9,12 +9,25 @@ const axiosInstance = axios.create({
 
 export const fetchPosts = () => axiosInstance.get(`/api/posts`);
 
-export const createPost = (formData) =>
-  axiosInstance.post(`/api/posts/create`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const createPost = async (userId, content, attachment) => {
+  try {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("content", content);
+    if (attachment) {
+      formData.append("attachment", attachment);
+    }
+    const res = await axiosInstance.post(`/api/posts/`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("create post: ", res);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const fetchReactionByPostId = async (postId) => {
   try {
@@ -26,13 +39,17 @@ export const fetchReactionByPostId = async (postId) => {
 };
 
 export const createReactionPost = async (postId, userId, reactionType) => {
-  const res = await axiosInstance.post(`/api/reaction/post`, {
-    postId: postId,
-    userId: userId,
-    reactionType: reactionType,
-  });
+  try {
+    const res = await axiosInstance.post(`/api/reaction/post`, {
+      postId: postId,
+      userId: userId,
+      reactionType: reactionType,
+    });
 
-  return res.data;
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const fetchComments = async (postId) => {
@@ -41,10 +58,18 @@ export const fetchComments = async (postId) => {
   return res.data;
 };
 
-export const createComment = async (newComment) => {
-  const res = await axiosInstance.post(`/api/comments/`, newComment);
+export const createComment = async (userId, postId, comment) => {
+  try {
+    const res = await axiosInstance.post(`/api/comments/`, {
+      userId,
+      postId,
+      comment,
+    });
 
-  return res.data;
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const fetchUser = async () => {
@@ -144,6 +169,34 @@ export const acceptFriendRequest = async (requestId) => {
 export const deleteFriendRequest = async (requestId) => {
   try {
     const res = await axiosInstance.delete(`/api/friends/${requestId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const fetchNotifications = async (userId) => {
+  try {
+    const res = await axiosInstance.get(`/api/notifications/${userId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const createNotification = async (
+  senderId,
+  receiverId,
+  type,
+  message
+) => {
+  try {
+    const res = await axiosInstance.post(`/api/notifications`, {
+      senderId,
+      receiverId,
+      type,
+      message,
+    });
     return res.data;
   } catch (err) {
     console.log(err);
