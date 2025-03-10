@@ -7,6 +7,7 @@ import {
   Avatar,
   Tooltip,
   styled,
+  Badge,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -27,10 +28,20 @@ import { chatListState$, userState$ } from "../../redux/selectors";
 import ChatList from "../ChatList/ChatList";
 import * as api from "../../api";
 import { Link } from "react-router-dom";
+import NotificationList from "../NotificationList/NotificationList";
+import { useSocket } from "../../socket/SocketProvider";
 
 const DeleteSearchIcon = styled(CloseRoundedIcon)`
   &:hover {
     cursor: pointer;
+  }
+`;
+
+const MessengerBadge = styled(Badge)`
+  &.MuiBadge-root {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }
 `;
 
@@ -63,17 +74,20 @@ const navbarItems = [
 ];
 
 export default function Header() {
+  const socket = useSocket();
   const [activeNavbarItem, setActiveNavbarItem] = useState(
     navbarItems[0].title
   );
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState("");
+  const [arrivalMessageCount, setArrivalMessageCount] = useState(0);
 
   const dispatch = useDispatch();
 
   const user = useSelector(userState$);
 
   const { isShow } = useSelector(chatListState$);
+  const [showNoti, setShowNoti] = useState(false);
 
   useEffect(() => {
     if (searchValue === "") {
@@ -89,6 +103,13 @@ export default function Header() {
 
     return () => clearTimeout(delaySearch); // Xóa timeout khi searchValue thay đổi trước khi hết thời gian chờ
   }, [searchValue]);
+
+  useEffect(() => {
+    socket.on("receiveMessage", (data) => {
+      console.log(data);
+      setArrivalMessageCount(arrivalMessageCount + 1);
+    });
+  }, [socket, arrivalMessageCount]);
 
   const handleToggleChatList = () => {
     if (isShow) {
@@ -163,12 +184,10 @@ export default function Header() {
                   to={`/user/${item?._id}`}
                   key={item?._id}
                 >
-                  <div className="chat-list--item">
+                  <div className="chat">
                     <Avatar src={item?.avatar} />
-                    <div className="chat-list--item--info">
-                      <p className="chat-list--item--info__header">
-                        {item?.name}
-                      </p>
+                    <div className="chat--info">
+                      <p className="chat--info__header">{item?.name}</p>
                     </div>
                   </div>
                 </Link>
@@ -201,16 +220,21 @@ export default function Header() {
         {/* Right navbar */}
         <div className="right-navbar">
           <Tooltip title="Messenger" onClick={handleToggleChatList}>
-            <div className={`right-navbar--item`}>
+            <div className="right-navbar--item">
               <i className="fa-brands fa-facebook-messenger"></i>
+              <MessengerBadge
+                badgeContent={arrivalMessageCount}
+                color="primary"
+              ></MessengerBadge>
             </div>
           </Tooltip>
-          {showChatList && <ChatList />}
-          <Tooltip title="Thông báo">
+          <ChatList />
+          <Tooltip title="Thông báo" onClick={() => setShowNoti(!showNoti)}>
             <div className="right-navbar--item">
               <i className="fa-solid fa-bell"></i>
             </div>
           </Tooltip>
+          {showNoti && <NotificationList />}
 
           <Tooltip title="Tài khoản">
             <Avatar src={user?.avatar}></Avatar>

@@ -4,6 +4,7 @@ import "./Contact.scss";
 import * as api from "../../../api";
 import { useDispatch } from "react-redux";
 import { showChatWindow } from "../../../redux/actions";
+import { convertToPascalCase } from "../../../helpers/string";
 
 const StyledAvatar = styled(Avatar)`
   width: 28px;
@@ -25,10 +26,14 @@ export default function Contact({ userId }) {
   useEffect(() => {
     const fetchUser = async () => {
       const chatUser = await api.fetchUserByUserId(userId);
-      setChatUser(chatUser);
+      const formatChatUser = {
+        ...chatUser,
+        name: convertToPascalCase(chatUser.name),
+      };
+      setChatUser(formatChatUser);
     };
 
-    fetchUser();
+    userId && fetchUser();
   }, [userId]);
 
   const handleOpenChat = async () => {

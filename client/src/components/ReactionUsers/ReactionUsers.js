@@ -1,9 +1,10 @@
 import { Avatar, AvatarGroup, styled, Tooltip } from "@mui/material";
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import * as api from "../../api";
-import { findReactionByType } from "../../reaction";
+import { findReactionByType } from "../../helpers/reaction";
 import { useSelector } from "react-redux";
 import { userState$ } from "../../redux/selectors";
+import ReactionUser from "./ReactionUser/ReactionUser";
 
 // ReactionIcon Component
 const ReactionIcon = styled(Avatar)`
@@ -20,66 +21,71 @@ const ReactionIcon = styled(Avatar)`
 `;
 
 export default function ReactionUsers({ post, reaction }) {
+  const [reactionTypes, setReactionTypes] = useState(null);
+  const [hasReaction, setHasReaction] = useState(false);
+  const [topReactionTypes, setTopReactionTypes] = useState(null);
+  const [reactionUserIds, setReactionUserIds] = useState(null);
+
   const user = useSelector(userState$);
 
   useEffect(() => {
     const fetchReaction = async () => {
-      await api.fetchReactionByPostId(post._id);
+      const res = await api.fetchReactionByPostId(post._id);
+      const reactionTypes = res?.reaction || {};
+      setReactionTypes(reactionTypes);
+
+      if (res?.reaction) {
+        // Kiểm tra có user nào reaction không
+        const hasReaction = Object.values(reactionTypes).some(
+          (type) => type.length > 0
+        );
+        setHasReaction(hasReaction);
+        setHasReaction(true);
+      }
+
+      if (hasReaction) {
+        // Lọc ra các reaction có số lượng user > 0
+        const topReactionTypes = Object.entries(reactionTypes)
+          .map(([key, value]) => ({
+            type: key,
+            count: value.length,
+            userIds: value,
+          }))
+          .filter((type) => type.count > 0)
+          .sort((a, b) => b.count - a.count) // Sắp xếp giảm dần theo số lượng user
+          .slice(0, 3); // Lấy top 3
+        setTopReactionTypes(topReactionTypes);
+
+        const reactionUserIds = Object.values(reactionTypes).flat();
+        setReactionUserIds(reactionUserIds);
+      }
     };
 
-    fetchReaction();
-  }, [post._id]);
-
-  const getTopReactions = (post) => {
-    // Lọc ra các reactions có count > 0
-    const reactionsWithCount = Object.keys(post)
-      .filter((key) => post[key].count > 0) // Chỉ lấy những reaction có count > 0
-      .map((key) => ({
-        type: key,
-        count: post[key].count,
-      }));
-
-    // Nếu không có reaction nào có count > 0
-    if (reactionsWithCount.length === 0) {
-      return 0; // Trả về 0 nếu tất cả count đều bằng 0
-    }
-
-    // Sắp xếp các reactions theo count giảm dần
-    reactionsWithCount.sort((a, b) => b.count - a.count);
-
-    // Trả về top 3 reactions
-    return reactionsWithCount.slice(0, 3);
-  };
+    post && fetchReaction();
+  }, [hasReaction, post]);
 
   // Hàm kiểm tra xem userId có tồn tại duy nhất trong một reaction không
-  const isOnlyLike = (post, userId) => {
-    return (
-      post.reactionUsers.length === 1 && post.reactionUsers[0]._id === userId
+  const isOnlyCurrentUserLike = (userId) => {
+    return reactionUserIds?.every(
+      (reactionUserId) => reactionUserId === userId
     );
   };
 
   return (
-    post.reactionCount > 0 && (
+    hasReaction && (
       <div className="card--footer--info__left--react">
-        <AvatarGroup max={4} spacing="medium">
-          {getTopReactions(post).map((reaction) => {
+        <AvatarGroup max={4}>
+          {topReactionTypes?.map((reaction) => {
             const mapReaction = findReactionByType(reaction.type);
             return (
               <Tooltip
                 key={reaction.type}
-                title={
-                  <Fragment>
-                    {post[reaction.type]?.users.map((reactionUser, index) => (
-                      <Fragment key={index}>
-                        <p>{reactionUser.name}</p>
-                        {/* Nếu số lượng người react nhiều hơn 10 thì thể hiện phần còn lại */}
-                        {post.reactionCount > 10 && (
-                          <p>và {post.reactionCount - 10} người khác</p>
-                        )}
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                }
+                title={reaction.userIds.map((reactionUserId) => (
+                  <ReactionUser
+                    key={reactionUserId}
+                    reactionUserId={reactionUserId}
+                  />
+                ))}
               >
                 <ReactionIcon
                   className={mapReaction.className}
@@ -90,22 +96,22 @@ export default function ReactionUsers({ post, reaction }) {
           })}
         </AvatarGroup>
 
+        {/* Reaction User List */}
         <Tooltip
-          title={
-            <Fragment>
-              {post.reactionUsers.map((reactionUser) => (
-                <p key={reactionUser._id}>{reactionUser.name}</p>
-              ))}
-            </Fragment>
-          }
+          title={reactionUserIds?.map((reactionUserId) => (
+            <ReactionUser
+              key={reactionUserId}
+              reactionUserId={reactionUserId}
+            />
+          ))}
         >
-          <p className="card--footer--info__left--react--p">
-            {isOnlyLike(post, user._id)
+          <span className="card--footer--info__left--react--p">
+            {isOnlyCurrentUserLike(user._id)
               ? `${user.name}`
               : reaction?.title
-              ? `Bạn và ${post.reactionCount - 1} người khác`
-              : `${post.reactionCount}`}
-          </p>
+              ? `Bạn và ${reactionUserIds?.length - 1} người khác`
+              : `${reactionUserIds?.length}`}
+          </span>
         </Tooltip>
       </div>
     )

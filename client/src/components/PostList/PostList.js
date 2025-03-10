@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Grid } from "@mui/material";
 import Post from "../Post/Post";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../redux/actions";

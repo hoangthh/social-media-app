@@ -9,19 +9,30 @@ import {
 import React, { useCallback, useRef, useState } from "react";
 import { modalState$, userState$ } from "../../redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, hideModal } from "../../redux/actions";
+import { getPosts, hideModal } from "../../redux/actions";
 import "./CreatePostModal.scss";
 import PeopleIcon from "@mui/icons-material/People";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import { Link } from "react-router-dom";
+import * as api from "../../api";
 
 const Username = styled(Typography)`
   font-weight: bold;
 `;
 
+const WhoCanSeeButton = styled(Button)`
+  text-transform: none;
+  background: #e2e5e9;
+  padding: 1px 5px;
+`;
+
+const SubmitButton = styled(Button)`
+  text-transform: none;
+`;
+
 export default function CreatePostModal() {
-  const [data, setData] = useState({
+  const [newPost, setNewPost] = useState({
     content: "",
     attachment: "",
     preview: "",
@@ -39,7 +50,7 @@ export default function CreatePostModal() {
 
   const handleCloseModal = useCallback(() => {
     dispatch(hideModal());
-    setData({
+    setNewPost({
       content: "",
       attachment: "",
     });
@@ -47,7 +58,7 @@ export default function CreatePostModal() {
 
   const handleContentChange = (e) => {
     const contentValue = e.target.value;
-    setData((prevData) => {
+    setNewPost((prevData) => {
       // Cập nhật state với giá trị mới
       const updatedData = { ...prevData, content: contentValue };
 
@@ -72,7 +83,7 @@ export default function CreatePostModal() {
     ) {
       setPreviewImage(URL.createObjectURL(selectedFile));
 
-      setData((prevData) => ({
+      setNewPost((prevData) => ({
         ...prevData,
         attachment: selectedFile,
       }));
@@ -87,21 +98,20 @@ export default function CreatePostModal() {
 
   const handleCloseImage = (e) => {
     e.stopPropagation();
-    setData((prevData) => ({ ...prevData, attachment: "" }));
+    setNewPost((prevData) => ({ ...prevData, attachment: "" }));
   };
 
-  const handleSubmit = useCallback(() => {
-    if (data.content) {
-      const formData = new FormData();
-      formData.append("content", data.content);
-      if (data.attachment) {
-        formData.append("attachment", data.attachment);
-      }
-      dispatch(createPost.createPostRequest(data));
-      handleCloseModal();
-    }
-    console.log(data);
-  }, [data, dispatch, handleCloseModal]);
+  const handleSubmit = useCallback(async () => {
+    if (!newPost.content) return;
+    const res = await api.createPost(
+      user._id,
+      newPost.content,
+      newPost.attachment
+    );
+    if (!res) return;
+    dispatch(getPosts.getPostsRequest());
+    handleCloseModal();
+  }, [user, newPost, dispatch, handleCloseModal]);
 
   const userName = "Hoàng";
 
@@ -130,20 +140,16 @@ export default function CreatePostModal() {
           <Username>{user.name}</Username>
 
           {/* Role Button */}
-          <Button
+          <WhoCanSeeButton
             variant="contained"
             size="small"
             color="inherit"
             startIcon={<PeopleIcon />}
             endIcon={<ArrowDropDownIcon />}
-            sx={{
-              textTransform: "none",
-              background: "#e2e5e9",
-              padding: "1px 5px",
-            }}
+            sx={{}}
           >
             Bạn bè
-          </Button>
+          </WhoCanSeeButton>
         </div>
       </div>
 
@@ -154,12 +160,12 @@ export default function CreatePostModal() {
           minRows={5}
           maxRows={10}
           placeholder={`${userName} ơi, bạn đang nghĩ gì thế?`}
-          value={data.content}
+          value={newPost.content}
           onChange={handleContentChange}
           sx={{ marginTop: "20px" }}
         />
 
-        {data.attachment ? (
+        {newPost.attachment ? (
           <div id="image-input-preview">
             <div id="image-input-preview--overlay">
               <Button
@@ -204,16 +210,15 @@ export default function CreatePostModal() {
 
       {/* Button */}
       <div className="modal--body--button" onClick={handleSubmit}>
-        <Button
+        <SubmitButton
           variant="contained"
           color="primary"
           component="span"
           fullWidth
           disabled={isSubmitButtonDisabled}
-          sx={{ textTransform: "none" }}
         >
           Đăng
-        </Button>
+        </SubmitButton>
       </div>
     </div>
   );

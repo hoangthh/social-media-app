@@ -12,8 +12,8 @@ export default function CommentItem({ comment }) {
       setUser(user);
     };
 
-    fetchUserByUserId();
-  }, [comment.userId]);
+    comment && fetchUserByUserId();
+  }, [comment]);
 
   return (
     <div className="comment-item">

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./CommentModal.scss";
 import { Avatar, Modal, styled, TextField } from "@mui/material";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
@@ -30,6 +36,7 @@ const SendButtonDisabled = styled(SendRoundedIcon)`
 
 export default function CommentModal() {
   const socket = useSocket();
+  const [author, setAuthor] = useState(null);
   const [comments, setComments] = useState(null);
   const [comment, setComment] = useState("");
   const [arrivalComment, setArrivalComment] = useState(null);
@@ -38,7 +45,7 @@ export default function CommentModal() {
   const scrollRef = useRef();
 
   const { isShow, data } = useSelector(commentModalState$);
-  const post = data || {};
+  const post = useMemo(() => data || {}, [data]);
   const user = useSelector(userState$);
 
   const dispatch = useDispatch();
@@ -58,6 +65,13 @@ export default function CommentModal() {
   }, [socket, arrivalComment]);
 
   useEffect(() => {
+    const fetchAuthor = async () => {
+      const author = await api.fetchUserByUserId(post.userId);
+      setAuthor(author);
+    };
+
+    post && fetchAuthor();
+
     // Lấy comments từ db
     const fetchComments = async () => {
       const comments = await api.fetchComments(post._id);
@@ -65,7 +79,7 @@ export default function CommentModal() {
     };
 
     fetchComments();
-  }, [post._id]);
+  }, [post]);
 
   // Scroll xuống comment mới nhất
   useEffect(() => {
@@ -96,15 +110,21 @@ export default function CommentModal() {
   const handleSubmit = async () => {
     if (comment) {
       const newComment = {
-        postId: post._id,
         userId: user._id,
+        postId: post._id,
         comment,
       };
+      await api.createComment(user._id, post._id, comment);
 
-      // Gửi tin nhắn lên socket
       socket.emit("sendComment", newComment);
-      const res = await api.createComment(newComment);
-      setComments([...comments, res]);
+
+      socket.emit("commentPostNotification", {
+        senderId: user._id,
+        receiverId: author._id,
+        message: "đã bình luận lên bài viết của bạn",
+      });
+
+      // setComments([...comments, res]);
       setComment(""); // Xóa nội dung sau khi submit (nếu cần)
       setIsSendButtonDisabled(true);
     }
@@ -114,7 +134,7 @@ export default function CommentModal() {
     <div className="comment-modal">
       {/* Header */}
       <div className="comment-modal--header">
-        Bài viết của {post?.author}
+        Bài viết của {author?.name}
         <div
           className="comment-modal--header__close-button"
           onClick={handleCloseModal}
@@ -128,11 +148,12 @@ export default function CommentModal() {
         <Post post={post} dispatch={dispatch} />
 
         {/* Read Comments */}
-        {comments?.map((comment) => (
-          <div key={comment._id} ref={scrollRef}>
-            <CommentItem key={comment._id} comment={comment} />
-          </div>
-        ))}
+        {comments?.length > 0 &&
+          comments.map((comment) => (
+            <div key={comment._id} ref={scrollRef}>
+              <CommentItem comment={comment} />
+            </div>
+          ))}
       </div>
 
       {/* Write Comment */}

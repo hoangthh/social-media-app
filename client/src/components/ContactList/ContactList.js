@@ -24,7 +24,7 @@ export default function ContactList() {
       const onlineUsers = users.filter(
         (user) => user.userId !== currentUser._id
       );
-      console.log(onlineUsers);
+      console.log("onlineUsers", onlineUsers);
       setOnlineUsers(onlineUsers);
     });
   }, [socket, currentUser]);

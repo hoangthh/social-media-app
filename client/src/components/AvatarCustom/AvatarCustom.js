@@ -22,7 +22,7 @@ const StyledAvatar = styled(Avatar)`
   }
 `;
 
-export default function AvatarCustom({ user }) {
+export default function AvatarCustom({ children, user }) {
   return (
     <AvatarCardTooltip
       title={<AvatarCard user={user} />}
@@ -39,7 +39,7 @@ export default function AvatarCustom({ user }) {
         },
       }}
     >
-      <StyledAvatar src={user?.avatar} />
+      {children ? children : <StyledAvatar src={user?.avatar} />}
     </AvatarCardTooltip>
   );
 }

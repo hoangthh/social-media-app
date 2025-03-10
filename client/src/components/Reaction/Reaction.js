@@ -4,7 +4,8 @@ import * as api from "../../api";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../redux/actions";
 import { userState$ } from "../../redux/selectors";
-import { reactions } from "../../reaction";
+import { reactions } from "../../helpers/reaction";
+import { useSocket } from "../../socket/SocketProvider";
 
 export default function Reaction({
   showReactions,
@@ -13,6 +14,8 @@ export default function Reaction({
   post,
   comment,
 }) {
+  const socket = useSocket();
+
   const user = useSelector(userState$);
 
   const dispatch = useDispatch();
@@ -21,6 +24,13 @@ export default function Reaction({
   const handleMultipleReactionPost = async (reaction) => {
     setReaction(reaction);
     await api.createReactionPost(post._id, user._id, reaction.type);
+
+    socket.emit("reactionPost", {
+      senderId: user._id,
+      receiverId: post.userId,
+      message: "đã bày tỏ cảm xúc đối với bài viết của bạn",
+    });
+
     dispatch(actions.getPosts.getPostsRequest());
   };
 

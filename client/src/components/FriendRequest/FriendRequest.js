@@ -38,8 +38,8 @@ export default function FriendRequest({ friend }) {
       setUser(user);
     };
 
-    fetchUser();
-  }, [friend?.senderId]);
+    friend && fetchUser();
+  }, [friend]);
 
   const handleAcceptFriendRequest = async () => {
     if (!friend) return;

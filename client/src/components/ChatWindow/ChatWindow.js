@@ -105,15 +105,15 @@ export default function ChatWindow() {
       setReceiver(res);
     };
 
-    if (receiverId) fetchUser();
+    receiverId && fetchUser();
 
     // Lấy lịch sử tin nhắn khi chọn người nhận
-    const getMessages = async () => {
+    const fetchMessages = async () => {
       const res = await api.fetchMessagesByChatId(chatId);
       setMessages(res);
     };
 
-    getMessages();
+    chatId && fetchMessages();
   }, [receiverId, chatId]);
 
   // Scroll xuống tin nhắn mới nhất

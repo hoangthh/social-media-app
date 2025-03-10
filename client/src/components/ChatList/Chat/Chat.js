@@ -2,12 +2,13 @@ import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import * as api from "../../../api";
 import "./Chat.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userState$ } from "../../../redux/selectors";
 import {
   convertToPascalCase,
   getLastWordOfName,
 } from "../../../helpers/string";
+import { hideChatList, showChatWindow } from "../../../redux/actions";
 
 export default function Chat({ chat }) {
   const [chatUser, setChatUser] = useState(null);
@@ -16,17 +17,19 @@ export default function Chat({ chat }) {
 
   const currentUser = useSelector(userState$);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const chatUserId = chat.members.find(
       (member) => member !== currentUser._id
     );
 
     const fetchUser = async () => {
-      const user = await api.fetchUserByUserId(chatUserId);
-      setChatUser(user);
+      const chatUser = await api.fetchUserByUserId(chatUserId);
+      setChatUser(chatUser);
     };
 
-    fetchUser();
+    chat && fetchUser();
   }, [chat, currentUser]);
 
   useEffect(() => {
@@ -42,10 +45,18 @@ export default function Chat({ chat }) {
     fetchMessages();
   }, [chat, chatUser, currentUser]);
 
+  const handleSelectChat = (receiverId, chatId, chat) => {
+    dispatch(hideChatList());
+    dispatch(showChatWindow({ receiverId, chatId, chat }));
+  };
+
   return (
     <>
       {latestMessage && (
-        <div className="chat">
+        <div
+          className="chat"
+          onClick={() => handleSelectChat(chatUser._id, chat._id, chat)}
+        >
           <Avatar src={chatUser?.avatar} />
 
           <div className="chat--info">

@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardMedia,
   IconButton,
+  styled,
   Typography,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -16,10 +17,52 @@ import { useSelector } from "react-redux";
 import { userState$ } from "../../redux/selectors";
 import * as actions from "../../redux/actions";
 import Reaction from "../Reaction/Reaction";
-import { findReactionByType } from "../../reaction";
+import { findReactionByType } from "../../helpers/reaction";
 import ReactionUsers from "../ReactionUsers/ReactionUsers";
+import { useSocket } from "../../socket/SocketProvider";
+import { Link } from "react-router-dom";
+import AvatarCustom from "../AvatarCustom/AvatarCustom";
+
+const PostCard = styled(Card)`
+  margin-top: 10px;
+`;
+
+const PostCardHeader = styled(CardHeader)`
+  font-weight: bold;
+`;
+
+const Username = styled(Typography)`
+  font-weight: 550;
+  color: black;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const PostCardMedia = styled(CardMedia)`
+  border-top: 1px solid #dadada;
+  border-bottom: 1px solid #dadada;
+  cursor: pointer;
+`;
+
+const CommentCount = styled(Typography)`
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
+const ShareCount = styled(Typography)`
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
 
 const Post = ({ post, dispatch }) => {
+  const socket = useSocket();
+  const [author, setAuthor] = useState(null);
   const [showReactions, setShowReactions] = useState(false);
   const [reaction, setReaction] = useState({
     title: "",
@@ -32,25 +75,15 @@ const Post = ({ post, dispatch }) => {
 
   const user = useSelector(userState$);
 
-  // Hàm tìm kiếm Reaction Type theo UserId
-  const findReactionTypeByUserId = (reactions, userId) => {
-    if (!reactions) return;
-
-    // Duyệt qua từng reaction trong bài post
-    for (const [reaction, data] of Object.entries(reactions)) {
-      // Kiểm tra nếu key có chứa danh sách users và userId tồn tại
-      if (data?.users?.includes(userId)) {
-        return reaction; // Trả về reaction nếu tìm thấy
-      }
-    }
-
-    return null; // Trả về null nếu không tìm thấy
-  };
-
   useEffect(() => {
+    const fetchAuthor = async () => {
+      const author = await api.fetchUserByUserId(post.userId);
+      setAuthor(author);
+    };
+
     const fetchReaction = async () => {
       const res = await api.fetchReactionByPostId(post._id);
-      const reactionType = findReactionTypeByUserId(res?.reactions, user._id);
+      const reactionType = findReactionTypeByUserId(res?.reaction, user._id);
       const mapReaction = findReactionByType(reactionType);
       setReaction(mapReaction);
     };
@@ -60,19 +93,44 @@ const Post = ({ post, dispatch }) => {
       setCommentCount(comments.length);
     };
 
-    fetchReaction();
-    fetchComments();
-  }, [post, user._id]);
+    if (post) {
+      fetchAuthor();
+      fetchReaction();
+      fetchComments();
+    }
+  }, [post, user]);
+
+  // Hàm tìm kiếm Reaction Type theo UserId
+  const findReactionTypeByUserId = (reactionTypes, userId) => {
+    if (!reactionTypes) return;
+
+    // Duyệt qua từng reaction trong bài post
+    for (const [reactionType, data] of Object.entries(reactionTypes)) {
+      // Kiểm tra nếu key có chứa danh sách users và userId tồn tại
+      if (data.includes(userId)) {
+        return reactionType; // Trả về reaction nếu tìm thấy
+      }
+    }
+
+    return null; // Trả về null nếu không tìm thấy
+  };
 
   const shareCount = 52;
 
   // Hàm xử lí thay đổi cảm xúc Thích
   const handleToggleLikeReactionPost = async () => {
-    await api.createReactionPost(
+    const res = await api.createReactionPost(
       post._id,
       user._id,
       reaction?.title ? "default" : "like"
     );
+
+    console.log(res);
+    socket.emit("reactionPost", {
+      senderId: user._id,
+      receiverId: author._id,
+      message: "đã bày tỏ cảm xúc đối với bài viết của bạn",
+    });
 
     dispatch(actions.getPosts.getPostsRequest());
   };
@@ -82,59 +140,58 @@ const Post = ({ post, dispatch }) => {
   };
 
   return (
-    <Card sx={{ marginTop: "10px" }}>
-      <CardHeader
-        avatar={<Avatar>A</Avatar>}
-        title={post.author}
+    <PostCard>
+      <PostCardHeader
+        avatar={
+          <AvatarCustom user={author}>
+            <Link to={`/user/${post.userId}`}>
+              <Avatar src={author?.avatar} />
+            </Link>
+          </AvatarCustom>
+        }
+        title={
+          <Link to={`/user/${post.userId}`} style={{ textDecoration: "none" }}>
+            <Username>{author?.name}</Username>
+          </Link>
+        }
         subheader={moment(post.updatedAt).format("HH:MM MMM DD,YYYY")}
         action={
           <IconButton>
             <MoreVertIcon />
           </IconButton>
         }
-        className="card--header"
-        sx={{ fontWeight: "bold" }}
       />
 
       <CardContent>
-        <Typography variant="body2" component="p" color="textSecondary">
-          {post.content}
-        </Typography>
+        <Typography>{post.content}</Typography>
       </CardContent>
 
-      <CardMedia
+      <PostCardMedia
         image={`${process.env.REACT_APP_BACKEND_URL}/${post.attachment}`}
         title="Title"
         component="img"
-        sx={{
-          borderTop: "1px solid #dadada",
-          borderBottom: "1px solid #dadada",
-          cursor: "pointer",
-        }}
       />
 
+      {/* Footer */}
       <div className="card--footer">
         <div className="card--footer--info">
           {/* Info left side */}
           <div className="card--footer--info__left">
             <ReactionUsers post={post} reaction={reaction} />
           </div>
+
           {/* Info right side */}
           <div className="card--footer--info__right">
             {commentCount > 0 && (
-              <p
-                className="card--footer--info__right--comment__p"
-                onClick={openCommentModal}
-              >
+              <CommentCount onClick={openCommentModal}>
                 {commentCount} bình luận
-              </p>
+              </CommentCount>
             )}
-            <p className="card--footer--info__right--share__p">
-              {shareCount} lượt chia sẻ
-            </p>
+            <ShareCount>{shareCount} lượt chia sẻ</ShareCount>
           </div>
         </div>
 
+        {/* Action Buttons */}
         <div className="card--footer--actions">
           <Reaction
             showReactions={showReactions}
@@ -182,7 +239,7 @@ const Post = ({ post, dispatch }) => {
           </div>
         </div>
       </div>
-    </Card>
+    </PostCard>
   );
 };
 
