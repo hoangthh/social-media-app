@@ -1,0 +1,18 @@
+.notification {
+  display: flex;
+  padding: 10px;
+  border-radius: 10px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+  }
+
+  &--message {
+    margin-left: 10px;
+
+    &__name {
+      font-weight: bold;
+    }
+  }
+}
