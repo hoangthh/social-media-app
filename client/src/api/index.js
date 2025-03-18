@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:5000";
+const URL = "https://socialmedia-rvz4.onrender.com";
 
 const axiosInstance = axios.create({
   baseURL: URL,
