@@ -73,7 +73,7 @@ app.use(passport.session());
 socket(io);
 
 app.get("/", (req, res) => {
-  res.send("Social Media Server Deployment");
+  res.send("Social Media Server Deployment!!");
 });
 
 // Cấu hình routers
