@@ -72,11 +72,12 @@ mongooseConnection();
 // Socket .IO
 socket(io);
 
-// Cấu hình routers
-app.use("/api", routers);
 app.get("/", (req, res) => {
   res.send("Social Media Server Deployment");
 });
+
+// Cấu hình routers
+app.use("/api", routers);
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
