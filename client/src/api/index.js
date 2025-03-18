@@ -74,7 +74,9 @@ export const createComment = async (userId, postId, comment) => {
 
 export const fetchUser = async () => {
   try {
-    const res = await axiosInstance.get(`/api/users/me`);
+    const res = await axiosInstance.get(`/api/users/me`, {
+      withCredentials: true,
+    });
 
     if (res.status !== 200) return null;
 
