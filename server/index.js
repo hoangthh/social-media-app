@@ -22,7 +22,7 @@ const server = http.createServer(app);
 // Tạo server Socket.io từ HTTP Server
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
   },
 });
 
@@ -41,7 +41,7 @@ app.use(express.static("uploads"));
 // Cấu hình CORS
 app.use(
   cors({
-    origin: "*", // URL frontend của bạn
+    origin: process.env.FRONTEND_URL_DEPLOY, // URL frontend của bạn
     credentials: true, // Cho phép gửi cookie
   })
 );
@@ -79,8 +79,8 @@ app.get("/", (req, res) => {
 // Cấu hình routers
 app.use("/api", routers);
 
-// server.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 export default app;
