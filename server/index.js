@@ -41,7 +41,7 @@ app.use(express.static("uploads"));
 // Cấu hình CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // URL frontend của bạn
+    origin: "*", // URL frontend của bạn
     credentials: true, // Cho phép gửi cookie
   })
 );
@@ -62,12 +62,12 @@ app.use(
 // Cấu hình cookie-parser middleware
 app.use(cookieParser());
 
+// Kết nối MongoDB
+mongooseConnection();
+
 // Khởi tạo PassportJS
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Kết nối MongoDB
-mongooseConnection();
 
 // Socket .IO
 socket(io);
@@ -79,6 +79,8 @@ app.get("/", (req, res) => {
 // Cấu hình routers
 app.use("/api", routers);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// server.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
+
+export default app;
