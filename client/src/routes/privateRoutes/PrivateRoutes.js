@@ -42,7 +42,7 @@ export default function PrivateRoutes() {
       </p>
     );
 
-  return isLogin ? (
+  return true ? (
     <>
       <Header />
       <Outlet />
