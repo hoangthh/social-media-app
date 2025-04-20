@@ -14,7 +14,7 @@ export const createPost = async (req, res) => {
   try {
     const userId = req.body.userId;
     const content = req.body.content;
-    const filename = req.file.filename;
+    const filename = req.file?.filename || "";
 
     // Tạo bài post mới với attachment
     const newPost = await PostModel.create({
@@ -25,6 +25,7 @@ export const createPost = async (req, res) => {
 
     res.status(200).send(newPost);
   } catch (err) {
+    console.log(err);
     return res.status(500).json(err);
   }
 };
