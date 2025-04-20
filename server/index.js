@@ -41,7 +41,7 @@ app.use(express.static("uploads"));
 // Cấu hình CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL_DEPLOY, // URL frontend của bạn
+    origin: process.env.FRONTEND_URL, // URL frontend của bạn
     credentials: true, // Cho phép gửi cookie
   })
 );

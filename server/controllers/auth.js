@@ -25,12 +25,10 @@ export const loginGoogleCallback = (req, res) => {
       // Lưu token vào cookie
       res.cookie("token", token, {
         httpOnly: true, // Cookie không thể truy cập từ JS
-        secure: process.env.NODE_ENV === "production", // Chỉ gửi cookie qua HTTPS trong môi trường production
-        // sameSite: "strict",
       });
 
       // Redirect về frontend sau khi đăng nhập thành công
-      res.redirect(`${process.env.FRONTEND_URL_DEPLOY}`);
+      res.redirect(`${process.env.FRONTEND_URL}`);
     }
   )(req, res);
 };

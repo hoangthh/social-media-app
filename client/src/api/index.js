@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "https://socialmedia-rvz4.onrender.com";
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 const axiosInstance = axios.create({
   baseURL: URL,

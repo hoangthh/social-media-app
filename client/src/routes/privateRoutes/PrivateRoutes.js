@@ -35,14 +35,14 @@ export default function PrivateRoutes() {
     fetchUser();
   }, [dispatch, navigate, socket]);
 
-  // if (loading)
-  //   return (
-  //     <p>
-  //       Loading to <a href="/login">login</a> ...
-  //     </p>
-  //   );
+  if (loading)
+    return (
+      <p>
+        Loading to <a href="/login">login</a> ...
+      </p>
+    );
 
-  return true ? (
+  return isLogin ? (
     <>
       <Header />
       <Outlet />
