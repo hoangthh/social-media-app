@@ -53,7 +53,6 @@ app.use(
     resave: false, // Không lưu session nếu không thay đổi
     saveUninitialized: false, // Không lưu session chưa khởi tạo
     cookie: {
-      secure: process.env.NODE_ENV === "production", // HTTPS ở chế độ production
       maxAge: 1000 * 60 * 60 * 24, // Thời gian tồn tại cookie (1 ngày)
     },
   })
