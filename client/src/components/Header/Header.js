@@ -105,7 +105,7 @@ export default function Header() {
   }, [searchValue]);
 
   useEffect(() => {
-    socket.on("receiveMessage", (data) => {
+    socket?.on("receiveMessage", (data) => {
       console.log(data);
       setArrivalMessageCount(arrivalMessageCount + 1);
     });

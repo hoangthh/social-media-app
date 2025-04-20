@@ -20,7 +20,7 @@ export default function ContactList() {
   const currentUser = useSelector(userState$);
 
   useEffect(() => {
-    socket.on("getUsers", (users) => {
+    socket?.on("getUsers", (users) => {
       const onlineUsers = users.filter(
         (user) => user.userId !== currentUser._id
       );
