@@ -25,6 +25,8 @@ export const loginGoogleCallback = (req, res) => {
       // Lưu token vào cookie
       res.cookie("token", token, {
         httpOnly: true, // Cookie không thể truy cập từ JS
+        secure: true, // BẮT BUỘC: khi dùng HTTPS (Render là HTTPS)
+        sameSite: "None", // BẮT BUỘC: cho phép cross-site cookie
       });
 
       // Redirect về frontend sau khi đăng nhập thành công
