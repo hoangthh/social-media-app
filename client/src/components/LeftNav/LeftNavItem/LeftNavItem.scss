@@ -1,0 +1,24 @@
+.left-nav-item {
+  min-width: 350px;
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+
+  &:hover {
+    background-color: #dadada;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  &--img {
+    width: 25px;
+    height: 25px;
+  }
+
+  &--p {
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 10px;
+  }
+}
