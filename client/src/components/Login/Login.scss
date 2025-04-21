@@ -1,11 +1,20 @@
+@import "../../mixin.scss";
+
 .login {
-  height: 100vh;
-  width: 100vw;
+  padding: 20px 50px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 50px;
+
+  @include respond("md") {
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 100px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
 
   &--heading {
     user-select: none;
@@ -15,15 +24,24 @@
       font-size: 60px;
       font-weight: 750;
       margin: 0;
+
+      @include respond("sm") {
+        font-size: 45px;
+      }
     }
 
     &__sub {
       margin-top: 10px;
       font-size: 27px;
+
+      @include respond("sm") {
+        font-size: 17px;
+      }
     }
   }
 
   &--form {
+    min-width: 400px;
     position: relative;
     box-sizing: border-box;
     background-color: #fff;
@@ -35,6 +53,11 @@
     border-radius: 10px;
     box-shadow: -2px 2px 10px 0 rgba(135, 135, 135, 0.2);
     user-select: none;
+
+    @include respond("sm") {
+      width: 100%;
+      min-width: 350px;
+    }
 
     &__forgot-password {
       text-align: center;

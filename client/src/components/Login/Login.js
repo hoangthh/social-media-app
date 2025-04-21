@@ -3,7 +3,7 @@ import "./Login.scss";
 import { Button, styled, TextField } from "@mui/material";
 
 const LoginButton = styled(Button)`
-  width: 360px;
+  width: 100%;
   padding: 10px 0;
   font-size: 20px;
   font-weight: 700;
