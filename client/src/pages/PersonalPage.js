@@ -147,7 +147,7 @@ export default function PersonalPage() {
             {/* Main Info Wrapper */}
             <div className="personal-page--header__main--wrapper">
               {/* Main info */}
-              <div style={{ marginLeft: "20px" }}>
+              <div>
                 {/* Username */}
                 <Username>{personalUser?.name}</Username>
 
@@ -165,7 +165,7 @@ export default function PersonalPage() {
                   Chỉnh sửa trang cá nhân
                 </ChangePersonalPageButton>
               ) : (
-                <div style={{ display: "flex" }}>
+                <div className="personal-page--header__main--wrapper__actions">
                   <RelationshipButton
                     personalUserId={personalUser?._id}
                     sx={{ marginRight: "20px" }}
