@@ -1,3 +1,5 @@
+@import "../../mixin.scss";
+
 .left-navbar {
   display: flex;
   align-items: center;
@@ -44,6 +46,10 @@
     &:hover {
       background-color: #dadada;
       cursor: pointer;
+    }
+
+    @include respond("lg") {
+      display: none;
     }
   }
 }

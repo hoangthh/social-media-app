@@ -9,6 +9,7 @@ const FriendCount = styled(Typography)`
 `;
 
 const AvatarGroupCustom = styled(AvatarGroup)`
+  margin-top: 5px;
   width: fit-content;
 `;
 
@@ -44,7 +45,7 @@ export default function MutualFriend({
         {showFriends &&
           acceptedFriends?.length > 0 &&
           `${acceptedFriends?.length} người bạn`}
-        {showFriends && showMutualFriends && mutualFriends.length > 0 && " •"}
+        {showFriends && showMutualFriends && mutualFriends.length > 0 && " • "}
         {showMutualFriends &&
           mutualFriends?.length > 0 &&
           `${mutualFriends?.length} bạn chung`}

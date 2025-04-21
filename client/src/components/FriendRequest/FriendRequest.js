@@ -4,6 +4,7 @@ import { Avatar, Button, styled } from "@mui/material";
 import * as api from "../../api";
 import MutualFriend from "../MutualFriend/MutualFriend";
 import { Link } from "react-router-dom";
+import { formatSmartTime } from "../../utils/momentConfig";
 
 const MainAvatar = styled(Avatar)`
   width: 100%;
@@ -74,7 +75,7 @@ export default function FriendRequest({ friend }) {
           </a>
 
           {/* Request Time */}
-          <span>{"1 ngày"}</span>
+          <span>{formatSmartTime(friend.createdAt)}</span>
         </div>
 
         {statusChange ? (
@@ -88,7 +89,7 @@ export default function FriendRequest({ friend }) {
                 flexDirection: "row-reverse",
                 justifyContent: "flex-end",
                 alignItems: "center",
-                marginTop: "5px",
+                gap: "10px",
               }}
             />
 

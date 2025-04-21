@@ -37,21 +37,21 @@ export default function FriendRequestList() {
 
   return (
     <>
-      {pendingFriends.length > 0 && (
-        <div className="friend-request-list">
-          {/* Header */}
+      <div className="friend-request-list">
+        {/* Header */}
 
-          <div className="friend-request-list--header">
-            <FriendRequestHeader>Lời mời kết bạn</FriendRequestHeader>
-            <SeeAllButton variant="text">Xem tất cả</SeeAllButton>
-          </div>
-
-          {/* Friend Request List */}
-          {pendingFriends.map((friend) => (
-            <FriendRequest key={friend?._id} friend={friend} />
-          ))}
+        <div className="friend-request-list--header">
+          <FriendRequestHeader>Lời mời kết bạn</FriendRequestHeader>
+          <SeeAllButton variant="text">Xem tất cả</SeeAllButton>
         </div>
-      )}
+
+        {/* Friend Request List */}
+        {pendingFriends.length > 0
+          ? pendingFriends.map((friend) => (
+              <FriendRequest key={friend?._id} friend={friend} />
+            ))
+          : "Hiện chưa có lời mời kết bạn mới"}
+      </div>
     </>
   );
 }

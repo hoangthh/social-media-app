@@ -1,3 +1,5 @@
+@import "../../mixin.scss";
+
 .comment-modal {
   position: absolute;
   top: 50%;
@@ -45,6 +47,10 @@
     scrollbar-width: thin;
     overflow-x: hidden;
     overflow-y: scroll;
+
+    @include respond("lg") {
+      width: 80vw;
+    }
   }
 
   &--write-comment {

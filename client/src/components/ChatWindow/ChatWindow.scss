@@ -1,3 +1,5 @@
+@import "../../mixin.scss";
+
 .chat-window {
   display: none;
   position: fixed;
@@ -9,6 +11,11 @@
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+
+  @include respond("sm") {
+    right: 10px;
+  }
 
   &.show {
     display: flex;

@@ -1,0 +1,21 @@
+// Breakpoints chuẩn bạn có thể thay đổi theo dự án
+$breakpoints: (
+  "xs": 320px,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+);
+
+// Mixin để sử dụng media query theo tên breakpoint
+@mixin respond($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $size: map-get($breakpoints, $breakpoint);
+    @media (max-width: $size) {
+      @content;
+    }
+  } @else {
+    @warn "⚠️ Breakpoint `#{$breakpoint}` không tồn tại trong map.";
+  }
+}

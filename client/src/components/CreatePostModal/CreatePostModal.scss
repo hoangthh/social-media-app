@@ -1,3 +1,5 @@
+@import "../../mixin.scss";
+
 .modal--body {
   width: 500px;
   height: fit-content;
@@ -9,6 +11,10 @@
   background-color: #fff;
   border-radius: 5px;
   animation: scaleIn 0.5s ease-out;
+
+  @include respond("sm") {
+    width: 90vw;
+  }
 
   &--header {
     display: flex;

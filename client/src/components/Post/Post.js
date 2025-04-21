@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import moment from "moment";
+import { formatSmartTime } from "../../utils/momentConfig";
 import "./Post.scss";
 import * as api from "../../api";
 import { useSelector } from "react-redux";
@@ -22,6 +22,7 @@ import ReactionUsers from "../ReactionUsers/ReactionUsers";
 import { useSocket } from "../../socket/SocketProvider";
 import { Link } from "react-router-dom";
 import AvatarCustom from "../AvatarCustom/AvatarCustom";
+import { media } from "../../muiResponsive";
 
 const PostCard = styled(Card)`
   margin-top: 10px;
@@ -51,13 +52,23 @@ const CommentCount = styled(Typography)`
     text-decoration: underline;
     cursor: pointer;
   }
+
+  ${media.sm(`
+    font-size: 12px;
+  `)}
 `;
 
 const ShareCount = styled(Typography)`
+  margin-left: 10px;
+
   &:hover {
     text-decoration: underline;
     cursor: pointer;
   }
+
+  ${media.sm(`
+    font-size: 12px;
+  `)}
 `;
 
 const Post = ({ post, dispatch }) => {
@@ -154,7 +165,7 @@ const Post = ({ post, dispatch }) => {
             <Username>{author?.name}</Username>
           </Link>
         }
-        subheader={moment(post.updatedAt).format("HH:MM MMM DD,YYYY")}
+        subheader={formatSmartTime(post.updatedAt)}
         action={
           <IconButton>
             <MoreVertIcon />
@@ -166,11 +177,13 @@ const Post = ({ post, dispatch }) => {
         <Typography>{post.content}</Typography>
       </CardContent>
 
-      <PostCardMedia
-        image={`${process.env.REACT_APP_BACKEND_URL}/${post.attachment}`}
-        title="Title"
-        component="img"
-      />
+      {post.attachment && (
+        <PostCardMedia
+          image={`${process.env.REACT_APP_BACKEND_URL}/${post.attachment}`}
+          title="Title"
+          component="img"
+        />
+      )}
 
       {/* Footer */}
       <div className="card--footer">

@@ -31,18 +31,18 @@ export default function ContactList() {
 
   return (
     <>
-      {onlineUsers.length > 0 && (
-        <div className="contact-list">
-          <div className="contact-list--header">
-            <ContactHeader>Người liên hệ</ContactHeader>
-          </div>
-
-          {/* Contact Person */}
-          {onlineUsers.map((user) => (
-            <Contact key={user.userId} userId={user.userId} />
-          ))}
+      <div className="contact-list">
+        <div className="contact-list--header">
+          <ContactHeader>Người liên hệ</ContactHeader>
         </div>
-      )}
+
+        {/* Contact Person */}
+        {onlineUsers?.length > 0
+          ? onlineUsers.map((user) => (
+              <Contact key={user.userId} userId={user.userId} />
+            ))
+          : "Bạn bè của bạn chưa online. Rủ họ ngay nào!"}
+      </div>
     </>
   );
 }
