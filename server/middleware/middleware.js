@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import multer from "multer";
+import path from "path";
 
 // Middleware kiểm tra token
 export const authenticateToken = (req, res, next) => {
@@ -26,7 +27,8 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
+    const ext = path.extname(file.originalname); // Lấy phần đuôi: .jpg, .png, v.v.
+    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
   },
 });
 
