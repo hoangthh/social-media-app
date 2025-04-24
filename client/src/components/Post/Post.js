@@ -165,7 +165,7 @@ const Post = ({ post, dispatch }) => {
             <Username>{author?.name}</Username>
           </Link>
         }
-        subheader={formatSmartTime(post.updatedAt)}
+        subheader={formatSmartTime(post.updatedAt) || "Vừa xong"}
         action={
           <IconButton>
             <MoreVertIcon />
