@@ -14,7 +14,7 @@ const ContactHeader = styled(Typography)`
 `;
 
 export default function ContactList() {
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   const currentUser = useSelector(userState$);

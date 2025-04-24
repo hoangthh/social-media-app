@@ -53,9 +53,13 @@ export const createReactionPost = async (postId, userId, reactionType) => {
 };
 
 export const fetchComments = async (postId) => {
-  const res = await axiosInstance.get(`/api/comments/${postId}`);
+  try {
+    const res = await axiosInstance.get(`/api/comments/${postId}`);
 
-  return res.data;
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const createComment = async (userId, postId, comment) => {
@@ -87,16 +91,33 @@ export const fetchUser = async () => {
 };
 
 export const fetchChatsByUserId = async (userId) => {
-  const res = await axiosInstance.get(`/api/chats/${userId}`);
-  return res.data;
+  try {
+    const res = await axiosInstance.get(`/api/chats/${userId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const createChat = async (senderId, receiverId) => {
-  const res = await axiosInstance.post(`/api/chats`, {
-    senderId,
-    receiverId,
-  });
-  return res.data;
+  try {
+    const res = await axiosInstance.post(`/api/chats`, {
+      senderId,
+      receiverId,
+    });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateIsReadLastMessage = async (chatId) => {
+  try {
+    const res = await axiosInstance.put(`/api/chats/read/${chatId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const searchUsersByName = async (name) => {
@@ -118,13 +139,33 @@ export const fetchUserByUserId = async (userId) => {
 };
 
 export const fetchMessagesByChatId = async (chatId) => {
-  const res = await axiosInstance.get(`/api/messages/${chatId}`);
-  return res.data;
+  try {
+    const res = await axiosInstance.get(`/api/messages/${chatId}`);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const sendMessage = async (message) => {
-  const res = await axiosInstance.post(`/api/messages`, message);
-  return res.data;
+  try {
+    const res = await axiosInstance.post(`/api/messages`, message);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateIsSeenLastMessage = async (chatId, viewerId) => {
+  try {
+    const res = await axiosInstance.put(`/api/messages/is-seen`, {
+      chatId,
+      viewerId,
+    });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const fetchFriendsByUserId = async (userId) => {

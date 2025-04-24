@@ -1,19 +1,18 @@
-import { Avatar } from "@mui/material";
+import { Avatar, Badge } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import * as api from "../../../api";
 import "./Chat.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { userState$ } from "../../../redux/selectors";
-import {
-  convertToPascalCase,
-  getLastWordOfName,
-} from "../../../helpers/string";
+import { convertToPascalCase } from "../../../helpers/string";
 import { hideChatList, showChatWindow } from "../../../redux/actions";
+import { formatSmartTime } from "../../../utils/momentConfig";
+import { useSocket } from "../../../socket/SocketProvider";
 
 export default function Chat({ chat }) {
+  const { socket, setArrivalSenderIds, setIsReadData } = useSocket();
   const [chatUser, setChatUser] = useState(null);
-  const [latestMessage, setLatestMessage] = useState(null);
-  const [sender, setSender] = useState("");
+  const [isRead, setIsRead] = useState(chat.lastMessage.isRead);
 
   const currentUser = useSelector(userState$);
 
@@ -25,39 +24,47 @@ export default function Chat({ chat }) {
     );
 
     const fetchUser = async () => {
-      const chatUser = await api.fetchUserByUserId(chatUserId);
-      setChatUser(chatUser);
+      const chatUserFromApi = await api.fetchUserByUserId(chatUserId);
+      setChatUser(chatUserFromApi);
     };
 
     chat && fetchUser();
   }, [chat, currentUser]);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      const messages = await api.fetchMessagesByChatId(chat._id);
-      const latestMessage = messages.at(-1);
-      latestMessage?.senderId !== currentUser._id
-        ? setSender(getLastWordOfName(chatUser?.name))
-        : setSender("Bạn");
-      setLatestMessage(latestMessage);
-    };
+    setIsRead(chat.lastMessage.isRead);
+  }, [chat]);
 
-    fetchMessages();
-  }, [chat, chatUser, currentUser]);
-
-  const handleSelectChat = (receiverId, chatId, chat) => {
+  const handleSelectChat = async (receiverId, chatId, chat) => {
     dispatch(hideChatList());
     dispatch(showChatWindow({ receiverId, chatId, chat }));
+
+    setArrivalSenderIds((prev) =>
+      prev.filter((senderId) => senderId !== chatUser._id)
+    );
+
+    await api.updateIsReadLastMessage(chatId);
+    setIsRead(!chat.lastMessage.isRead);
+    setIsReadData({ chatId, isRead: true });
+
+    await api.updateIsSeenLastMessage(chatId, currentUser._id);
+    socket?.emit("seenMessage", {
+      viewerId: currentUser._id,
+      receiverId: chatUser._id,
+    });
   };
 
   return (
     <>
-      {latestMessage && (
+      {chat.lastMessage && (
         <div
           className="chat"
           onClick={() => handleSelectChat(chatUser._id, chat._id, chat)}
         >
-          <Avatar src={chatUser?.avatar} />
+          <Avatar
+            src={chatUser?.avatar}
+            sx={{ width: "56px", height: "56px" }}
+          />
 
           <div className="chat--info">
             {/* Header - Name */}
@@ -66,16 +73,32 @@ export default function Chat({ chat }) {
             </span>
 
             {/* Footer */}
-            <div className="chat--info__footer">
+            <div
+              className={`chat--info__footer ${
+                !isRead && chat.lastMessage.senderId !== currentUser._id
+                  ? "bold"
+                  : ""
+              }`}
+            >
               {/* Latest Message */}
-              <span className="chat--info__footer--latest-message">
-                {`${sender}: ${latestMessage?.message}`}
+              {chat.lastMessage.senderId === currentUser._id && (
+                <span className="chat--info__footer sender">{"Bạn:"}</span>
+              )}
+              <span className="chat--info__footer last-message">
+                {chat.lastMessage.message}
               </span>
-
+              {formatSmartTime(chat.lastMessage.createdAt) !== "" && (
+                <strong>.</strong>
+              )}
               {/* Time */}
-              <span className="chat-list--item--info__footer--time">{}</span>
+              <span className="chat--info__footer time">
+                {formatSmartTime(chat.lastMessage.createdAt)}
+              </span>
             </div>
           </div>
+          {!isRead && chat.lastMessage.senderId !== currentUser._id && (
+            <Badge variant="dot" color="primary"></Badge>
+          )}
         </div>
       )}
     </>

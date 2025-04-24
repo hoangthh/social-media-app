@@ -10,7 +10,7 @@ import { convertToPascalCase } from "../../helpers/string";
 export default function PrivateRoutes() {
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
-  const socket = useSocket();
+  const { socket } = useSocket();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

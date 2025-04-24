@@ -2,9 +2,10 @@ import { Avatar, Badge, styled, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./Contact.scss";
 import * as api from "../../../api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showChatWindow } from "../../../redux/actions";
 import { convertToPascalCase } from "../../../helpers/string";
+import { userState$ } from "../../../redux/selectors";
 
 const StyledAvatar = styled(Avatar)`
   width: 28px;
@@ -22,6 +23,7 @@ export default function Contact({ userId }) {
   const [chatUser, setChatUser] = useState(null);
 
   const dispatch = useDispatch();
+  const user = useSelector(userState$);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -37,7 +39,7 @@ export default function Contact({ userId }) {
   }, [userId]);
 
   const handleOpenChat = async () => {
-    const chat = await api.createChat(userId, chatUser._id);
+    const chat = await api.createChat(user._id, chatUser._id);
     dispatch(showChatWindow({ receiverId: userId, chatId: chat._id, chat }));
   };
 

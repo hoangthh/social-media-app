@@ -37,7 +37,7 @@ const DeleteSearchIcon = styled(CloseRoundedIcon)`
   }
 `;
 
-const MessengerBadge = styled(Badge)`
+const CustomBadge = styled(Badge)`
   &.MuiBadge-root {
     position: absolute;
     top: 5px;
@@ -74,20 +74,25 @@ const navbarItems = [
 ];
 
 export default function Header() {
-  const socket = useSocket();
+  const {
+    arrivalSenderIds,
+    setArrivalSenderIds,
+    arrivalNotifications,
+    setArrivalNotifications,
+  } = useSocket();
+
   const [activeNavbarItem, setActiveNavbarItem] = useState(
     navbarItems[0].title
   );
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState("");
-  const [arrivalMessageCount, setArrivalMessageCount] = useState(0);
+  const [showNoti, setShowNoti] = useState(false);
 
   const dispatch = useDispatch();
 
   const user = useSelector(userState$);
 
   const { isShow } = useSelector(chatListState$);
-  const [showNoti, setShowNoti] = useState(false);
 
   useEffect(() => {
     if (searchValue === "") {
@@ -104,19 +109,24 @@ export default function Header() {
     return () => clearTimeout(delaySearch); // Xóa timeout khi searchValue thay đổi trước khi hết thời gian chờ
   }, [searchValue]);
 
-  useEffect(() => {
-    socket?.on("receiveMessage", (data) => {
-      console.log(data);
-      setArrivalMessageCount(arrivalMessageCount + 1);
-    });
-  }, [socket, arrivalMessageCount]);
-
   const handleToggleChatList = () => {
     if (isShow) {
       dispatch(hideChatList());
       return;
     }
+    setShowNoti(false);
     dispatch(showChatList());
+    setArrivalSenderIds([]);
+  };
+
+  const handleToggleNotiList = () => {
+    if (showNoti) {
+      setShowNoti(false);
+      return;
+    }
+    dispatch(hideChatList());
+    setShowNoti(true);
+    setArrivalNotifications([]);
   };
 
   const handleNavbarClick = (item) => {
@@ -222,16 +232,20 @@ export default function Header() {
           <Tooltip title="Messenger" onClick={handleToggleChatList}>
             <div className="right-navbar--item">
               <i className="fa-brands fa-facebook-messenger"></i>
-              <MessengerBadge
-                badgeContent={arrivalMessageCount}
+              <CustomBadge
+                badgeContent={arrivalSenderIds.length}
                 color="primary"
-              ></MessengerBadge>
+              ></CustomBadge>
             </div>
           </Tooltip>
           <ChatList />
-          <Tooltip title="Thông báo" onClick={() => setShowNoti(!showNoti)}>
+          <Tooltip title="Thông báo" onClick={handleToggleNotiList}>
             <div className="right-navbar--item">
               <i className="fa-solid fa-bell"></i>
+              <CustomBadge
+                badgeContent={arrivalNotifications?.length}
+                color="primary"
+              ></CustomBadge>
             </div>
           </Tooltip>
           {showNoti && <NotificationList />}

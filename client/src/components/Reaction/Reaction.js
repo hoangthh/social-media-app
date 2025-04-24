@@ -14,7 +14,7 @@ export default function Reaction({
   post,
   comment,
 }) {
-  const socket = useSocket();
+  const { socket } = useSocket();
 
   const user = useSelector(userState$);
 

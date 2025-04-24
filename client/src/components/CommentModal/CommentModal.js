@@ -35,7 +35,7 @@ const SendButtonDisabled = styled(SendRoundedIcon)`
 `;
 
 export default function CommentModal() {
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [author, setAuthor] = useState(null);
   const [comments, setComments] = useState(null);
   const [comment, setComment] = useState("");

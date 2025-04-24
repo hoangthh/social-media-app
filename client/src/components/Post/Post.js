@@ -72,7 +72,7 @@ const ShareCount = styled(Typography)`
 `;
 
 const Post = ({ post, dispatch }) => {
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [author, setAuthor] = useState(null);
   const [showReactions, setShowReactions] = useState(false);
   const [reaction, setReaction] = useState({

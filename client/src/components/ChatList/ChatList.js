@@ -6,6 +6,7 @@ import * as api from "../../api";
 import { useSelector } from "react-redux";
 import { chatListState$, userState$ } from "../../redux/selectors";
 import Chat from "./Chat/Chat";
+import { useSocket } from "../../socket/SocketProvider";
 
 const SearchInput = styled(TextField)`
   margin: 15px 0;
@@ -17,17 +18,77 @@ const SearchInput = styled(TextField)`
 `;
 
 export default function ChatList() {
+  const { socket, newMessageData, isReadData } = useSocket();
   const [chats, setChats] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState(null);
+  const [arrivalChat, setArrivalChat] = useState({
+    _id: "",
+    members: [],
+    lastMessage: {
+      senderId: "",
+      message: "",
+      createdAt: "",
+    },
+  });
+  const [isRead, setIsRead] = useState(false);
 
   const currentUser = useSelector(userState$);
   const { isShow } = useSelector(chatListState$);
 
   useEffect(() => {
+    socket?.on("receiveMessage", (data) => {
+      console.log(data);
+      setArrivalChat((prev) => ({
+        ...prev,
+        _id: data.chat._id,
+        members: [currentUser._id, data.senderId],
+        lastMessage: {
+          senderId: data.senderId,
+          message: data.message,
+          createdAt: Date.now(),
+          isRead,
+        },
+      }));
+    });
+    setChats((prev) => [
+      arrivalChat,
+      ...prev.filter((c) => c._id !== arrivalChat._id),
+    ]);
+  }, [arrivalChat, currentUser, isRead, socket]);
+
+  useEffect(() => {
+    if (newMessageData) {
+      console.log({ newMessageData });
+      setArrivalChat((prev) => ({
+        ...prev,
+        _id: newMessageData.chat._id,
+        members: [newMessageData.senderId, newMessageData.receiverId],
+        lastMessage: {
+          senderId: newMessageData.senderId,
+          message: newMessageData.message,
+          createdAt: Date.now(),
+        },
+      }));
+    }
+  }, [newMessageData]);
+
+  useEffect(() => {
+    if (isReadData.chatId !== "") {
+      setArrivalChat((prev) => ({
+        ...prev,
+        lastMessage: {
+          ...prev.lastMessage,
+          isRead: isReadData.isRead,
+        },
+      }));
+      setIsRead(isReadData.isRead);
+    }
+  }, [isReadData]);
+
+  useEffect(() => {
     const getChats = async () => {
       const res = await api.fetchChatsByUserId(currentUser._id);
-
       setChats(res);
     };
     getChats();

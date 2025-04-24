@@ -6,12 +6,12 @@
   bottom: 0;
   right: 50px;
   width: 320px;
-  height: 60vh;
+  height: 450px;
   background: white;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
-  z-index: 10000;
+  z-index: 1000;
 
   @include respond("sm") {
     right: 10px;
@@ -30,7 +30,18 @@
     display: flex;
     align-items: center;
     padding: 7px 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     border-bottom: 1px solid #dadada;
+
+    &.unread {
+      background: linear-gradient(
+        #aa00ff calc(100vh - 455px + 48px),
+        #0070f6 calc(100% - 56px),
+        #0070f6
+      );
+      color: white;
+    }
 
     &--info {
       margin-left: 10px;
@@ -50,11 +61,34 @@
 
   &--body {
     overflow-y: scroll;
+    overflow-x: hidden;
     scrollbar-width: thin;
     display: flex;
     flex-direction: column;
     flex: 1;
     padding: 10px;
+
+    &__typing-wrapper {
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-end;
+
+      &.typing-img {
+        margin-left: 10px;
+        width: 50px;
+      }
+    }
+
+    &__read-or-seen {
+      margin-top: 5px;
+      margin-right: 10px;
+      display: flex;
+      justify-content: flex-end;
+
+      p {
+        font-size: 12px;
+      }
+    }
   }
 
   &--footer {

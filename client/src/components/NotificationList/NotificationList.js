@@ -7,7 +7,7 @@ import { userState$ } from "../../redux/selectors";
 import Notification from "./Notification/Notification";
 
 export default function NotificationList() {
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [notifications, setNotifications] = useState(null);
   const currentUser = useSelector(userState$);
 
@@ -39,8 +39,8 @@ export default function NotificationList() {
       </div>
 
       {/* Notification */}
-      {notifications?.map((notification) => (
-        <Notification key={notification._id} notification={notification} />
+      {notifications?.map((notification, index) => (
+        <Notification key={index} notification={notification} />
       ))}
     </div>
   );
