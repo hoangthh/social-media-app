@@ -16,7 +16,6 @@ export default function NotificationList() {
       setNotifications((prev) => [...prev, { senderId, message }]);
     });
     socket.on("receiveCommentPostNotification", ({ senderId, message }) => {
-      console.log({ senderId, message });
       setNotifications((prev) => [...prev, { senderId, message }]);
     });
   }, [socket]);

@@ -38,7 +38,6 @@ export default function ChatList() {
 
   useEffect(() => {
     socket?.on("receiveMessage", (data) => {
-      console.log(data);
       setArrivalChat((prev) => ({
         ...prev,
         _id: data.chat._id,
@@ -59,10 +58,9 @@ export default function ChatList() {
 
   useEffect(() => {
     if (newMessageData) {
-      console.log({ newMessageData });
       setArrivalChat((prev) => ({
         ...prev,
-        _id: newMessageData.chat._id,
+        _id: newMessageData?.chat?._id,
         members: [newMessageData.senderId, newMessageData.receiverId],
         lastMessage: {
           senderId: newMessageData.senderId,
