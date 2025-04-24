@@ -1,12 +1,18 @@
 import express from "express";
-import { createMessage, getMessagesByChatId } from "../controllers/messages.js";
+import {
+  createMessage,
+  getMessagesByChatId,
+  markLastSentMessageAsSeen,
+} from "../controllers/messages.js";
 
 const router = express.Router();
 
-//PATH: /message
+//PATH: /messages
 
 router.get("/:chatId", getMessagesByChatId);
 
 router.post("/", createMessage);
+
+router.put("/is-seen", markLastSentMessageAsSeen);
 
 export default router;

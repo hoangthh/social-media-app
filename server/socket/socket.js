@@ -1,4 +1,3 @@
-import { MessageModel } from "../models/messageModel.js";
 let users = []; // Lưu socketId
 
 const addUser = (userId, socketId) => {
@@ -52,11 +51,23 @@ export const socket = (io) => {
       io.emit("receiveComment", { postId, userId, comment });
     });
 
-    socket.on("sendMessage", ({ senderId, receiverId, message }) => {
+    socket.on("sendMessage", ({ senderId, receiverId, message, chat }) => {
       const user = getUser(receiverId);
       // Nếu có user nhận thì mới gửi tin nhắn
       user &&
-        io.to(user.socketId).emit("receiveMessage", { senderId, message });
+        io
+          .to(user.socketId)
+          .emit("receiveMessage", { senderId, message, chat });
+    });
+
+    socket.on("typing", ({ chatId, senderId, receiverId }) => {
+      const user = getUser(receiverId);
+      user && io.to(user.socketId).emit("typing", { chatId, senderId });
+    });
+
+    socket.on("seenMessage", ({ viewerId, receiverId }) => {
+      const user = getUser(receiverId);
+      user && io.to(user.socketId).emit("seenMessage", { viewerId });
     });
 
     // Khi user disconnect, xóa khỏi danh sách

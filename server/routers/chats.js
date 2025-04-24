@@ -1,5 +1,9 @@
 import express from "express";
-import { createChat, getChatsByUserId } from "../controllers/chats.js";
+import {
+  createChat,
+  getChatsByUserId,
+  updateIsReadLastMessage,
+} from "../controllers/chats.js";
 
 const router = express.Router();
 
@@ -8,5 +12,7 @@ const router = express.Router();
 router.get("/:userId", getChatsByUserId);
 
 router.post("/", createChat);
+
+router.put("/read/:chatId", updateIsReadLastMessage);
 
 export default router;

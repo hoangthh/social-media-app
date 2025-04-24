@@ -71,7 +71,9 @@ export const findAndCreateNotification = async (
 export const getNotifications = async (req, res) => {
   try {
     const { userId } = req.params;
-    const notifications = await NotificationModel.find({ receiverId: userId });
+    const notifications = await NotificationModel.find({
+      receiverId: userId,
+    }).sort({ createdAt: -1 });
     res.status(200).json(notifications);
   } catch (err) {
     res.status(500).json(err);
